@@ -1,1 +1,2 @@
-# gh_pages_acr_result
+# 編集方法 
+Doc配下のguidline.xlsxを編集⇒htmlとして保存
