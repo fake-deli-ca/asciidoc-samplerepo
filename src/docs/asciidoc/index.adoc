@@ -1,0 +1,17 @@
+include::./attribute.adoc[]
+
+= CloudとSaaS型CI/CDツールを利用した開発ガイドライン
+https://github.com/check-c-search/gh_pages_acr_result
+2020-04-15
+:Revision: 2.0.0
+:toc: left
+
+// 章ごとにインクルードしていく（画像パスも上書きすること）
+:imagesdir: Chapter01/images
+include::Chapter01/index.adoc[]
+
+:imagesdir: Chapter02/images
+include::Chapter02/index.adoc[]
+
+:imagesdir: Chapter03/images
+include::Chapter03/index.adoc[]
