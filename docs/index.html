@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="author" content="https://github.com/check-c-search/gh_pages_acr_result">
-<title>CloudとSaaS型CI/CDツールを利用した開発ガイドライン</title>
+<title>CloudとSaaS型CI/CDを利用した開発ガイドライン</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
 /* Uncomment @import statement below to use as custom stylesheet */
@@ -439,7 +439,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>CloudとSaaS型CI/CDツールを利用した開発ガイドライン</h1>
+<h1>CloudとSaaS型CI/CDを利用した開発ガイドライン</h1>
 <div class="details">
 <span id="author" class="author">https://github.com/check-c-search/gh_pages_acr_result</span><br>
 <span id="revdate">2020-04-15</span>
@@ -469,8 +469,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_cicdツールの設定指針">3. CI/CDツールの設定指針</a>
 <ul class="sectlevel2">
 <li><a href="#_概要_2">3.1. 概要</a></li>
-<li><a href="#_設定ファイルに記載することついて">3.2. 設定ファイルに記載することついて</a></li>
-<li><a href="#_webサイトで設定することについて">3.3. Webサイトで設定することについて</a></li>
+<li><a href="#_sonarqube連携について">3.2. SonarQube連携について</a></li>
+<li><a href="#_nexus連携について">3.3. Nexus連携について</a></li>
+<li><a href="#_設定ファイルで指定することについて">3.4. 設定ファイルで指定することについて</a></li>
+<li><a href="#_webサイトcircleciで指定することについて">3.5. Webサイト(CircleCI)で指定することについて</a></li>
 </ul>
 </li>
 </ul>
@@ -497,10 +499,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>CI/CDツールについてはJenkinsが最も有名であり、多くの運用事例がありますが、実運用に足る構成を実現するためには、チューニングに多くの知識が必要となるため、作業の属人化が発生しやすく、また構築難易度・維持コスト共に高くなるという課題があります。</p>
+<p>CI/CDツールについてはJenkinsが最も有名であり、多くの運用事例がありますが、実運用に足る構成を実現するためにはチューニングに多くの知識が必要となるため、作業の属人化が発生しやすく、また構築難易度・維持コスト共に高くなるという課題があります。</p>
 </li>
 <li>
-<p>一方で、近年ではTraviceCI、CircleCIと言ったSaaS型のCI/CDツールの運用事例も増えています。
+<p>一方で、近年ではWerckerやCircleCIと言ったSaaS型のCI/CDツールの運用事例も増えています。
 また、主要なSaaS型ツールはチューニングが設定ファイル1つであることやサービス利用型の特性から、Jenkins運用で懸念される課題を改善することが期待されます。</p>
 </li>
 <li>
@@ -514,7 +516,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>近年のPublicクラウド市場は今だ20％以上の年率で成長していますが、徐々に従来のAWS一強状態からの変化が生まれており、MicrosoftAzureやAlibabaCloudといった脱AWSの選択肢をとる企業も増えてきているため、今後はマルチクラウド対応が求められます。</p>
+<p>近年のPublicクラウド市場は今だ20％以上の年率で成長していますが、徐々に従来のAWS一強状態からの変化が生まれており、MicrosoftAzureやAlibabaCloudといった脱AWSの選択肢をとる企業も増えてきているため、今後はマルチクラウドへの対応が求められることが予想されます。</p>
 </li>
 <li>
 <p>そのため、このガイドラインではAWS以外のCloud環境に対する知見を得る意味も込めてCloud環境として「AlibabaCloud」を利用します。</p>
@@ -529,69 +531,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_前提事項">1.3. 前提事項</h3>
 <div class="paragraph">
-<p>パイプライン上ではブランチ毎に下記の実行処理は実行することを前提としています。</p>
+<p>このガイドラインは、下記の事項を前提としています。</p>
 </div>
+<div class="sect3">
+<h4 id="_webアプリケーション">1.3.1. Webアプリケーション</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>issueブランチ（名：[issue]+文字列）</p>
-<div class="ulist">
-<ul>
-<li>
-<p>ビルドチェック</p>
+<p>アプリケーションはJavaによるWebアプリケーション（以下AP）を対象とする</p>
 </li>
 <li>
-<p>Junitテスト</p>
+<p>APの開発フレームワークは「SpringBoot」を利用</p>
 </li>
 <li>
-<p>SonarQubeへのJunitテスト結果連携、静的検証</p>
+<p>APのビルドツールは「Gradle」を利用</p>
+</li>
+<li>
+<p>ビルド成果物は単独のjarファイル</p>
+</li>
+<li>
+<p>APサーバ上では、"java -jar"コマンドでjarを実行する処理をShellに記載し、サービス登録することでWebアプリケーションが動いている</p>
 </li>
 </ul>
 </div>
-</li>
-<li>
-<p>masterブランチ（名：master）</p>
-<div class="ulist">
-<ul>
-<li>
-<p>ビルドチェック</p>
-</li>
-<li>
-<p>Junitテスト</p>
-</li>
-<li>
-<p>SonarQubeへのJunitテスト結果連携、静的検証</p>
-</li>
-<li>
-<p>Nexusへのライブラリ登録</p>
-</li>
-<li>
-<p>最新のmasterブランチに対してタグ打ち（名：version-X.X.X-SNAPSHOT）</p>
-</li>
-</ul>
 </div>
-</li>
-<li>
-<p>releaseブランチ（名：release）</p>
-<div class="ulist">
-<ul>
-<li>
-<p>ビルドチェック</p>
-</li>
-<li>
-<p>Junitテスト</p>
-</li>
-<li>
-<p>Nexusへのライブラリ登録</p>
-</li>
-<li>
-<p>最新のmasterブランチに対してタグ打ち（名：version-X.X.X-RELEASE）</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
+<div class="sect3">
+<h4 id="_cloud環境">1.3.2. Cloud環境</h4>
 <div class="paragraph">
 <p>Cloud上の環境は下記を前提としています。</p>
 </div>
@@ -622,7 +587,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>2つのサーバはロードバランサによるパスルーティングによってクライアントPCからの接続が振り分けられる。</p>
+<p>2つのサーバへの接続はロードバランサによるパスルーティングによって振り分けられる。</p>
 </li>
 </ul>
 </div>
@@ -630,6 +595,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <hr>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_全体像">1.4. 全体像</h3>
@@ -713,10 +679,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <table class="tableblock frame-all grid-all stripes-even stretch">
 <caption class="title">表 1. SaaS型CI/CDツール</caption>
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 6.25%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <thead>
 <tr>
@@ -753,22 +719,850 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tr>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_cicdで行うことについて">3.1.1. CI/CDで行うことについて</h4>
+<div class="paragraph">
+<p>ローカル環境で作成・修正したアプリケーション（以降AP）に対して、下記の処理を自動実行します。</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ビルドチェック</dt>
+<dd>
+<p>ビルドツールによるビルドを行うことで、各種ライブラリとの依存関係が解消されており、APが実行環境で動作可能な状態であることを保証します。</p>
+</dd>
+<dt class="hdlist1">テスト</dt>
+<dd>
+<p>ローカル環境で使用したテストコードでビルドしたAPのJunitテストを行います。 <br>
+また、SonarQubeによる静的検証（Checkstyle、SpotBugs）を行います。</p>
+</dd>
+<dt class="hdlist1">ビルド資産の管理</dt>
+<dd>
+<p>ビルドに成功したAPをNexusに登録することで、ビルド資産のバージョン管理を行います。</p>
+</dd>
+<dt class="hdlist1">デプロイ</dt>
+<dd>
+<p>ビルドに成功したAPを実行環境にデプロイします。</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ブランチ戦略">3.1.2. ブランチ戦略</h4>
+<div class="paragraph">
+<p>アプリケーションはGitHubのリポジトリで管理し、状態毎に下記のブランチを切って管理を行います。</p>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 2. ブランチ戦略</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">ブランチ</th>
+<th class="tableblock halign-left valign-top">ブランチ名</th>
+<th class="tableblock halign-left valign-top">説明</th>
+<th class="tableblock halign-left valign-top">作成/削除タイミング</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">masterブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">master</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">常に最新版のブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">常に存在する</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">issueブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">issue&lt;簡単な説明&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">作業用のブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">issueに基づいて、作業担当者がmasterブランチより作成する<br>
+PRをmergeした際にレビュー担当者が削除する</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">releaseブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">release</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">リリース用のブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">リリースの際にライブラリ管理者がmasterブランチより作成する<br>
+リリース完了後にライブラリ管理者が削除する</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_タグによるリリースバージョン管理">3.1.3. タグによるリリースバージョン管理</h4>
+<div class="paragraph">
+<p>アプリケーションのリリースバージョンはGitHubのタグで管理し、CI/CD内で下記の様式に従ってタグを生成する。</p>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 3. タグ</caption>
+<colgroup>
+<col style="width: 9.0909%;">
+<col style="width: 72.7272%;">
+<col style="width: 18.1819%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">ブランチ</th>
+<th class="tableblock halign-left valign-top">タグ名</th>
+<th class="tableblock halign-left valign-top">作成タイミング</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">master</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version-＜メジャーバージョン＞.＜マイナーバージョン＞.＜リビジョンバージョン＞-SNAPSHOT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PRをmergeした際</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">master</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version-＜メジャーバージョン＞.＜マイナーバージョン＞.＜リビジョンバージョン＞-RELEASE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">releaseした際</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_ブランチ毎のcicdフロー">3.1.4. ブランチ毎のCI/CDフロー</h4>
+<div class="paragraph">
+<p>パイプライン上ではブランチ毎に下記の処理を実行する。</p>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 4. CI/CDフロー</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 42.8571%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">ブランチ</th>
+<th class="tableblock halign-left valign-top">パイプライン起動の契機</th>
+<th class="tableblock halign-left valign-top">実行処理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">issueブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ローカル環境よりGitHub上にpushした際</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ビルドチェック</p>
+<p class="tableblock">Junitテスト</p>
+<p class="tableblock">SonarQubeへのJunitテスト結果連携、静的検証</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">masterブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PRをmergeした際</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ビルドチェック</p>
+<p class="tableblock">Junitテスト</p>
+<p class="tableblock">SonarQubeへのJunitテスト結果連携、静的検証</p>
+<p class="tableblock">Nexusへのライブラリ登録</p>
+<p class="tableblock">最新のmasterブランチに対してタグ打ち<br>
+（名：version-X.X.X-SNAPSHOT）</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">releaseブランチ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ローカル環境よりGitHub上にpushした際</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ビルドチェック</p>
+<p class="tableblock">Junitテスト</p>
+<p class="tableblock">Nexusへのライブラリ登録</p>
+<p class="tableblock">最新のmasterブランチに対してタグ打ち<br>
+（名：version-X.X.X-RELEASE）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_設定ファイルに記載することついて">3.2. 設定ファイルに記載することついて</h3>
-
+<h3 id="_sonarqube連携について">3.2. SonarQube連携について</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Junitテストの結果を連携する</p>
+</li>
+<li>
+<p>Checkstyleによる静的検証を実施する</p>
+</li>
+<li>
+<p>SpotBugsによる静的検証を実施する</p>
+</li>
+<li>
+<p>カバレッジ情報を表示する</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_webサイトで設定することについて">3.3. Webサイトで設定することについて</h3>
+<h3 id="_nexus連携について">3.3. Nexus連携について</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>PRをmergeしたタイミングでSNAPSHOTリポジトリにビルド資産を連携する</p>
+</li>
+<li>
+<p>releaseブランチをGitHub上に作成したタイミングでRELEASEリポジトリにビルド資産を連携する</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_設定ファイルで指定することについて">3.4. 設定ファイルで指定することについて</h3>
+<div class="sect3">
+<h4 id="_設定ファイルの記載方法">3.4.1. 設定ファイルの記載方法</h4>
+<div class="literalblock">
+<div class="content">
+<pre>CircleCIの設定ファイル「config.yml」の基本構成は下記のようになっており、適宜PJの方針に合わせて必要な処理を記述する。</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>設定ファイルは、大きく下記の3ブロックより構成される。 <br></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>パイプラインブロック <br>
+→ Job単位で「どのコンテナ環境」を利用して、「どんな処理」を行うかを記述する。</p>
+</li>
+<li>
+<p>ワークフローブロック <br>
+→ 各Job間の前後関係・依存関係や各Jobの処理対象ブランチを記述する。</p>
+</li>
+<li>
+<p>定時実行ワークフローブロック <br>
+→ cronベースで「どのタイミング」で起動するのか、またワークフローブロック同様に「どのJob」が「どんな依存関係」で「どのブランチ」を対象に処理するのかを記述する。</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">config.yml：基本構成</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>### 基本構成
+#CircleCIのバージョン指定
+version: 2.1
 
+#以下パイプラインの処理記述
+jobs:
+　build:
+ 　　#実行環境
+ 　　docker:
+ 　　　- image: Dockerイメージ
+
+ 　　#以下、処理「build」の実処理
+ 　　steps:
+ 　　　- checkout ※対象コードチェックアウト
+ 　　　- 処理②...
+　deploy:
+ 　　docker:
+ 　　　- image: Dockerイメージ
+ 　　steps:
+ 　　　- checkout
+ 　　　- 処理②...
+
+#以下ワークフローの記載
+workflows:
+　version: 2
+　workflow:
+　　jobs:
+　　　- build:
+  　　　　filters:
+  　　　　　branches:
+  　　　　　　only:
+  　　　　　　　- 対象とするブランチ名
+　　　　　post-steps:
+　　　　　　- 定常実行処理
+　　　- deploy:
+  　　　　requires: ※先行処理
+　　　　　　- build
+
+#以下、定時実行ワークフローの記載
+　nightly:
+　　triggers:
+　　　- schedule:
+　　　　　cron: &quot;25 * * * *&quot;
+　　　　　　filters:
+　　　　　　　branches:
+　　　　　　　　only:
+  　　　　　　　　- master
+　　jobs:
+　　　- build:
+　　　　　filters:
+　　　　　　branches:
+　　　　　　　only:
+　　　　　　　　- /^issue\/.+/
+　　　- deploy:
+　　　　　requires:
+　　　　　　- build</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>設定ファイル記述の詳細については、下記の公式ドキュメントを参照</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>＜CircleCI公式ドキュメント＞ <br>
+<a href="https://circleci.com/docs/" class="bare">https://circleci.com/docs/</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>特に下記ページを起点にすると、設定ファイル全体の内どの部分にあたる記述なのかをイメージしやすく、作業を効率よく進められます。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>「CircleCIサイト＞リファレンスページURL」 <br>
+<a href="https://circleci.com/docs/ja/2.0/configuration-reference/#section=reference" class="bare">https://circleci.com/docs/ja/2.0/configuration-reference/#section=reference</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sonarqube連携方法">3.4.2. SonarQube連携方法</h4>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>build.gradleファイルに下記の記載を行う</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>config.ymlファイルに下記の記載を行う</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle：sonarqubeプラグインの利用</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>plugins {
+  id &quot;org.sonarqube&quot; version &quot;2.8&quot;
+}
+…
+sonarqube {
+    properties {
+        property &quot;sonar.jacoco.reportPath&quot;, &quot;${project.buildDir}/jacoco/test.exec&quot;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">config.yml：sonarqubeタスクの呼び出し</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>##&quot;./gradlew sonarqube&quot;コマンドによるSonerQubeサイトで設定した検証の実施と結果連携を行う。
+jobs:
+…
+  sonarqube:
+…
+    steps:
+      - checkout
+      - run:
+          name: analyze by SonarQube
+          command: |
+            ./gradlew clean sonarqube \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.jdbc.url=$SONAR_JDBC_URL \
+              -Dsonar.jdbc.driverClassName=$SONAR_JDBC_DRIVER \
+              -Dsonar.jdbc.username=$SONAR_JDBC_USERNAME \
+              -Dsonar.jdbc.password=$SONAR_JDBC_PASSWORD \
+              -Dsonar.projectName=&quot;${CIRCLE_BRANCH}&quot;_&quot;${CIRCLE_BUILD_NUM}&quot;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_nexus連携方法">3.4.3. Nexus連携方法</h4>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>build.gradleファイルに下記の記載を行う</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>config.ymlファイルに下記の記載を行う</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle：maven-publishプラグインの利用</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>plugins {
+  id &quot;maven-publish&quot;
+}
+…
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = archivesBaseName
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url System.getenv(&quot;NEXUS_URL&quot;)
+            credentials {
+                username = System.getenv(&quot;NEXUS_USERNAME&quot;)
+                password = System.getenv(&quot;NEXUS_USERPASSWORD&quot;)
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>publishingタスクの詳細な記載方法は、下記公式ドキュメントを参照</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">config.yml：publishingタスクの呼び出し</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>##&quot;./gradlew upload&quot;コマンドによるビルド成果物のNexus録を行う。
+jobs:
+…
+  nexus:
+…
+    steps:
+      - checkout
+      - run:
+          name: upload to NEXUS
+          command: |
+            ./gradlew clean build publish</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_設定ファイルの配置">3.4.4. 設定ファイルの配置</h4>
+<div class="paragraph">
+<p>作成した設定ファイルは、ルートディレクトリ直下の「.circleci」ディレクトリ配下に配置することでGitHubへの操作を契機としCircleCIによりCI/CDが実行されます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_01.png" alt="github_rootdirectory" width="640">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_webサイトcircleciで指定することについて">3.5. Webサイト(CircleCI)で指定することについて</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>「CircleCIサイトURL」 <a href="https://circleci.com" class="bare">https://circleci.com</a><br></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>ログイン方法等については、公式ドキュメントを参照<br>
+* ＜CircleCI公式ドキュメント＞  <a href="https://circleci.com/docs/" class="bare">https://circleci.com/docs/</a></p>
+</div>
+<div class="sect3">
+<h4 id="_対象リポジトリの登録">3.5.1. 対象リポジトリの登録</h4>
+<div class="paragraph">
+<p>「Add Projects」よりCI/CD対象のリポジトリ登録を行います。<br>
+Github上のリポジトリの公開設定に関わらず登録が可能です。<br>
+また、後述する設定を行うことで自身が所属するOrganization所有のリポジトリを権限に応じて利用可能です。</p>
+</div>
+<div class="paragraph">
+<p>1 ダッシュボード画面より「Add Projects」を選択する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_11.png" alt="add_repository" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>2 GitHub側の公開設定に関わらず、全リポジトリが表示されるので対象とするリポジトリを選択する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_12.png" alt="add_repository" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>3 ビルドツールを選択して、「Start Building」でリポジトリ登録を開始する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_13.png" alt="add_repository" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>4 「Start Building」を押すと下記のポップアップが表示されるので適宜「Add Manually」か「Add Config」を選択する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_14.png" alt="add_repository" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>「Add Config」を選択した場合、図に表示されているようにブランチが作成され、.circleci配下に設定ファイル（config.yml）が作成される。
+その後、設定ファイルに基づいて初回のパイプライン実行が行われる。
+ ※設定ファイルの内容は前画面で表示されたデフォルトの内容になるので、初回のパイプライン実行は上手くいかないことが多いです。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Add Manually」を選択した場合、下記のポップアップが表示されるので適宜設定ファイルを.circleci配下に準備してから「Start Building」をクリックする。<br>
+ ※下図にあるように「Download config.yml」で設定ファイルをダウンロードすることも可能です。<br>
+ ※設定ファイルの内容は、前画面で表示された内容のものです。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_15.png" alt="add_repository" width="640">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>4 初期パイプライン実行が行われると、下図のように実行が表示される。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_16.png" alt="add_repository" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>5 登録済みのリポジトリは「Set Up Project」ボタンが「Unfollow Project」ボタンに変わっているので、これを押すとリポジトリ登録が解除される。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_17.png" alt="add_repository" width="640">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_環境変数の登録">3.5.2. 環境変数の登録</h4>
+<div class="paragraph">
+<p>「config.yml」や「build.gradle」に記載した環境変数はパイプライン起動時にCircleCI画面で設定した値に自動的に置き換えられる。</p>
+</div>
+<div class="paragraph">
+<p>1 対象リポジトリのパイプライン画面より「Project Settings」を選択する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_21.png" alt="add_env" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>2 Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できる。<br>
+Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できる。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_22.png" alt="add_env" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>3 「Add Config Variable」を押すと下記のポップアップが表示されるので、任意の環境変数と変数値を入力して「Add Environment Variable」を押す。<br>
+　既存の環境変数を入力すると変数値を置き換えることができる。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_23.png" alt="add_env" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>4 「✕」を押すと下記のポップアップが表示されるので、テキストボックスに「DELETE」と入力して「Delete Environment Variable」を押す。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_24.png" alt="add_env" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>自分で設定する環境変数以外にも、CircleCIデフォルトで準備されている環境変数が存在する。<br>
+それらについては、特に宣言することなく設定ファイル中で利用可能です。<br>
+詳細は下記URLを参照。</p>
+</div>
+<div class="paragraph">
+<p>「CircleCIサイト＞環境変数の使い方」<br>
+<a href="https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-step" class="bare">https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-step</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_実行結果の発報">3.5.3. 実行結果の発報</h4>
+<div class="paragraph">
+<p>パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。</p>
+</div>
+<div class="paragraph">
+<p>1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_31.png" alt="add_slack" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携される。<br>
+正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知する。<br>
+異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_32.png" alt="add_slack" width="640">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_organizationアカウントのrepositoryを参照するための設定">3.5.4. Organizationアカウントのrepositoryを参照するための設定</h4>
+<div class="paragraph">
+<p>1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行う。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_41.png" alt="organization" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開く。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_42.png" alt="organization" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>3 画面下の「Organization access」に自信が所属しているOrganizationが表示されるので、その内容を確認して「Grant」ボタンを押下する。<br>
+　この操作でOrganization所有のリポジトリを参照できるようになる。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_43.png" alt="organization" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_44.png" alt="organization" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Organization所有のリポジトリについては、Organization内での自アカウントの権限によって操作が制限される。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>リポジトリの参照
+管理者権限のあるリポジトリについては、個人アカウント同様に「リポジトリの登録」「登録解除」を行うことができる。<br>
+ ※ただし、リポジトリ解除できるのは自身が登録したリポジトリに限られる。<br>
+その他のリポジトリについては、「リポジトリの参照」「参照解除」を行うことができる。
+ ※ただし、管理者によって登録が解除されているリポジトリについては参照不可（鍵のマークがつく）<br>
+また、GitHub上での権限設定がCircleCIに反映されるまで若干のタイムラグが存在する。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_45.png" alt="organization" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_46.png" alt="organization" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>環境変数の設定
+リポジトリへのアクセス権限が「参照」の場合、下図に示すように「ProjectSettings」が非活性になるため環境変数を含め、リポジトリの設定を変更することは不可能です。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_47.png" alt="organization" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>リポジトリへのアクセス権限が「書込み」以上の場合、下図に示すように「ProjectSettings」が活性になるため環境変数を含め、リポジトリの設定を変更することが可能です。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_48.png" alt="organization" width="640">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-最終更新 2020-04-15 11:55:29 +0900
+最終更新 2020-04-15 16:46:51 +0900
 </div>
 </div>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+pre.CodeRay{background:#f7f7f8}
+.CodeRay .line-numbers{border-right:1px solid currentColor;opacity:.35;padding:0 .5em 0 0}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.75em}
+.CodeRay .line-numbers strong{color:#000}
+table.CodeRay{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.CodeRay td{vertical-align:top;line-height:inherit}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.code{padding:0 0 0 .75em}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
 </body>
 </html>
