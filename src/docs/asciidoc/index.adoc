@@ -1,6 +1,6 @@
 include::./attribute.adoc[]
 
-= CloudとSaaS型CI/CDツールを利用した開発ガイドライン
+= CloudとSaaS型CI/CDを利用した開発ガイドライン
 https://github.com/check-c-search/gh_pages_acr_result
 2020-04-15
 :Revision: 2.0.0
