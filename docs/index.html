@@ -1398,6 +1398,117 @@ jobs:
               -Dsonar.projectName=&quot;${CIRCLE_BRANCH}&quot;_&quot;${CIRCLE_BUILD_NUM}&quot;</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 10. sonarqubeタスクのプロパティ</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 43.75%;">
+<col style="width: 43.75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">プロパティ</th>
+<th class="tableblock halign-left valign-top">説明</th>
+<th class="tableblock halign-left valign-top">変更要否</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar.jacoco.reportPath</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Jacocoが生成するレポートファイルへのパス<br>
+<span class="small">※Jacoco：Java のコードカバレッジライブラリ</span></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>デフォルト値のため変更不要</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar.host.url</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>接続先SonarQubのURL</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar.jdbc.driverClassName</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SonarQubが利用するJDBCのドライバクラス名</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar.jdbc.username</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SonarQubが利用するDBのユーザ名</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar.jdbc.password</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SonarQubが利用するDBのパスワード</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sonar.projectName</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SonarQubサイトで表示される名称</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>今回は下記のCircleCIのデフォルト環境変数により自動で定義するようにしているため変更は不要<br></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">「CIRCLE_BRANCH」</dt>
+<dd>
+<p>CI/CD対象のブランチ名</p>
+</dd>
+<dt class="hdlist1">「CIRCLE_BUILD_NUM」</dt>
+<dd>
+<p>CircleCI上のビルド回数</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>SonarQub画面には下図のように表示される。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_51.png" alt="sonarqube" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>sonarqubeタスクの詳細な記載方法は、下記公式ドキュメントを参照<br>
+<a href="https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-gradle/" class="bare">https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-gradle/</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_nexus連携方法">3.4.3. Nexus連携方法</h4>
@@ -1419,6 +1530,10 @@ jobs:
 <pre class="CodeRay highlight"><code>plugins {
   id &quot;maven-publish&quot;
 }
+…
+group 'ビルド成果物のパッケージ名''
+version '1.0.0-SNAPSHOT'
+archivesBaseName = 'ビルド成果物のファイル名'
 …
 publishing {
     publications {
@@ -1469,6 +1584,71 @@ jobs:
           name: upload to NEXUS
           command: |
             ./gradlew clean build publish</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 11. publishingタスクのプロパティ</caption>
+<colgroup>
+<col style="width: 13.3333%;">
+<col style="width: 40%;">
+<col style="width: 46.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">プロパティ</th>
+<th class="tableblock halign-left valign-top">説明</th>
+<th class="tableblock halign-left valign-top">変更要否</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groupId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nexusに登録する際のパッケージ名</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※このガイドラインでは、「group」の値を設定しています</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">artifactId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nexusに登録する際のファイル名</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※このガイドラインでは、「archivesBaseName」の値を設定しています</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">接続先SonarQubのURL</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nexusのログインユーザ名</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nexusのログインパスワード</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>PJの設定に併せて変更する<br>
+<span class="small">※環境変数の設定については後述します</span></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Nexus画面には下図のように表示される。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_61.png" alt="nexus" width="640">
 </div>
 </div>
 </div>
@@ -1603,7 +1783,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </td>
 <td class="content">
 <div class="paragraph">
-<p>商用利用の場合、Githubはプライベートリポジトリで利用する想定ですが、パブリックリポジトリの場合はconfig.ymlの内容が不特定多数に公開されます。
+<p>商用利用の場合、Githubはプライベートリポジトリで利用する想定ですが、パブリックリポジトリの場合はconfig.ymlの内容が不特定多数に公開されます。<br>
 そのため、特に理由がないのであればリポジトリの設定に関わらず <span class="red">秘匿情報は環境変数としてWeb-UIで設定すること</span>。</p>
 </div>
 </td>

@@ -239,6 +239,56 @@ jobs:
               -Dsonar.jdbc.password=$SONAR_JDBC_PASSWORD \
               -Dsonar.projectName="${CIRCLE_BRANCH}"_"${CIRCLE_BUILD_NUM}"
 -----
+[cols="2,7a,7a", options="header"]
+.sonarqubeタスクのプロパティ
+|===
+|プロパティ
+|説明
+|変更要否
+
+|sonar.jacoco.reportPath
+|Jacocoが生成するレポートファイルへのパス +
+[small]#※Jacoco：Java のコードカバレッジライブラリ#
+|デフォルト値のため変更不要
+
+|sonar.host.url
+|接続先SonarQubのURL
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+
+|sonar.jdbc.driverClassName
+|SonarQubが利用するJDBCのドライバクラス名
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+
+|sonar.jdbc.username
+|SonarQubが利用するDBのユーザ名
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+
+|sonar.jdbc.password
+|SonarQubが利用するDBのパスワード
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+
+|sonar.projectName
+|SonarQubサイトで表示される名称
+|今回は下記のCircleCIのデフォルト環境変数により自動で定義するようにしているため変更は不要 +
+
+「CIRCLE_BRANCH」:: CI/CD対象のブランチ名
+
+「CIRCLE_BUILD_NUM」:: CircleCI上のビルド回数
+|===
+SonarQub画面には下図のように表示される。
+
+image::fig_51.png[sonarqube, 640]
+
+
+[TIP]
+====
+sonarqubeタスクの詳細な記載方法は、下記公式ドキュメントを参照 +
+https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-gradle/
+====
 
 ==== Nexus連携方法
 <1> build.gradleファイルに下記の記載を行う
@@ -251,6 +301,10 @@ jobs:
 plugins {
   id "maven-publish"
 }
+…
+group 'ビルド成果物のパッケージ名''
+version '1.0.0-SNAPSHOT'
+archivesBaseName = 'ビルド成果物のファイル名'
 …
 publishing {
     publications {
@@ -293,6 +347,43 @@ jobs:
           command: |
             ./gradlew clean build publish
 -----
+
+[cols="2,6,7a", options="header"]
+.publishingタスクのプロパティ
+|===
+|プロパティ
+|説明
+|変更要否
+
+|groupId
+|Nexusに登録する際のパッケージ名
+|PJの設定に併せて変更する +
+[small]#※このガイドラインでは、「group」の値を設定しています#
+
+|artifactId
+|Nexusに登録する際のファイル名
+|PJの設定に併せて変更する +
+[small]#※このガイドラインでは、「archivesBaseName」の値を設定しています#
+
+|url
+|接続先SonarQubのURL
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+
+|username
+|Nexusのログインユーザ名
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+
+|password
+|Nexusのログインパスワード
+|PJの設定に併せて変更する +
+[small]#※環境変数の設定については後述します#
+|===
+
+Nexus画面には下図のように表示される。
+
+image::fig_61.png[nexus, 640]
 
 ==== 設定ファイルの配置
 作成した設定ファイルは、ルートディレクトリ直下の「.circleci」ディレクトリ配下に配置することでGitHubへの操作を契機としCircleCIによりCI/CDが実行されます。
