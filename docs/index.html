@@ -458,18 +458,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_クラウド環境の設定指針">2. クラウド環境の設定指針</a>
 <ul class="sectlevel2">
 <li><a href="#_概要">2.1. 概要</a></li>
-<li><a href="#_alibabacloudで設定することについて">2.2. AlibabaCloudで設定することについて</a></li>
-<li><a href="#_各サーバの構成について">2.3. 各サーバの構成について</a></li>
+<li><a href="#_alibabacloudで設定することについて">2.2. AlibabaCloudで設定することについて</a>
+<ul class="sectlevel3">
+<li><a href="#_vpcvirtual_private_cloud">2.2.1. VPC（Virtual Private Cloud）</a></li>
+<li><a href="#_vswith">2.2.2. VSwith</a></li>
+<li><a href="#_ecselastic_compute_service">2.2.3. ECS（Elastic Compute Service）</a></li>
+<li><a href="#_セキュリティグループ">2.2.4. セキュリティグループ</a></li>
+<li><a href="#_slbserver_load_balancer">2.2.5. SLB（Server Load Balancer）</a></li>
+</ul>
+</li>
+<li><a href="#_各サーバの構成について">2.3. 各サーバの構成について</a>
+<ul class="sectlevel3">
+<li><a href="#_webアプリケーション用サーバ">2.3.1. Webアプリケーション用サーバ</a></li>
+<li><a href="#_sonarqubenexus用サーバ">2.3.2. SonarQube・Nexus用サーバ</a></li>
+</ul>
+</li>
 <li><a href="#_ネットワークの構成について">2.4. ネットワークの構成について</a></li>
 </ul>
 </li>
 <li><a href="#_cicdツールの設定指針">3. CI/CDツールの設定指針</a>
 <ul class="sectlevel2">
-<li><a href="#_概要_2">3.1. 概要</a></li>
+<li><a href="#_概要_2">3.1. 概要</a>
+<ul class="sectlevel3">
+<li><a href="#_cicdで行うことについて">3.1.1. CI/CDで行うことについて</a></li>
+<li><a href="#_ブランチ戦略">3.1.2. ブランチ戦略</a></li>
+<li><a href="#_タグによるリリースバージョン管理">3.1.3. タグによるリリースバージョン管理</a></li>
+<li><a href="#_ブランチ毎のcicdフロー">3.1.4. ブランチ毎のCI/CDフロー</a></li>
+</ul>
+</li>
 <li><a href="#_sonarqube連携について">3.2. SonarQube連携について</a></li>
 <li><a href="#_nexus連携について">3.3. Nexus連携について</a></li>
-<li><a href="#_設定ファイルで指定することについて">3.4. 設定ファイルで指定することについて</a></li>
-<li><a href="#_webサイトcircleciで指定することについて">3.5. Webサイト(CircleCI)で指定することについて</a></li>
+<li><a href="#_設定ファイルで指定することについて">3.4. 設定ファイルで指定することについて</a>
+<ul class="sectlevel3">
+<li><a href="#_設定ファイルの記載方法">3.4.1. 設定ファイルの記載方法</a></li>
+<li><a href="#_sonarqube連携方法">3.4.2. SonarQube連携方法</a></li>
+<li><a href="#_nexus連携方法">3.4.3. Nexus連携方法</a></li>
+</ul>
+</li>
+<li><a href="#_設定ファイルの配置">3.5. 設定ファイルの配置</a></li>
+<li><a href="#_webサイトcircleciで指定することについて">3.6. Webサイト(CircleCI)で指定することについて</a>
+<ul class="sectlevel3">
+<li><a href="#_対象リポジトリの登録">3.6.1. 対象リポジトリの登録</a></li>
+<li><a href="#_環境変数の登録">3.6.2. 環境変数の登録</a></li>
+<li><a href="#_実行結果の発報">3.6.3. 実行結果の発報</a></li>
+<li><a href="#_organizationアカウントのrepositoryを参照するための設定">3.6.4. Organizationアカウントのrepositoryを参照するための設定</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -656,9 +690,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>ESCにアクセス可能なポート番号を設定します。<br>
 セキュリティグループに設定されていないポートは通信に使用することができません。<br>
-また、ポート毎にインバウンドおよびアウトバウンドのアクセス可否を設定することが可能です。<br>
-* インバウンド　：外部から内部への通信（外部PCからの自社サービスへのアクセス）
-* アウトバウンド：内部から外部への通信（インスタンスからの外部システムへのアクセス）</p>
+また、ポート毎にインバウンドおよびアウトバウンドのアクセス可否を設定することが可能です。<br></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>インバウンド　：外部から内部への通信（外部PCからの自社サービスへのアクセス）<br></p>
+</li>
+<li>
+<p>アウトバウンド：内部から外部への通信（インスタンスからの外部システムへのアクセス）</p>
+</li>
+</ul>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -711,11 +753,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_各サーバの構成について">2.3. 各サーバの構成について</h3>
 <div class="paragraph">
-<p>このガイドラインで取り扱うサーバについてい説明します。
-==== Webアプリケーション用サーバ
-このサーバでは、開発したAPが配置されています。
-* サーバスペック
+<p>このガイドラインで取り扱うサーバについてい説明します。</p>
+</div>
+<div class="sect3">
+<h4 id="_webアプリケーション用サーバ">2.3.1. Webアプリケーション用サーバ</h4>
+<div class="paragraph">
+<p>このサーバでは、開発したAPが配置されています。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>サーバスペック<br>
 サーバは下記のよう設定しています。</p>
+</li>
+</ul>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
 <caption class="title">表 1. サーバ</caption>
@@ -788,12 +839,19 @@ APは、下図のようにAPを「Java -jar」コマンドにより起動するS
 <img src="Chapter02/images/fig_32.png" alt="web" width="640">
 </div>
 </div>
+</div>
 <div class="sect3">
-<h4 id="_sonarqubenexus用サーバ">2.3.1. SonarQube・Nexus用サーバ</h4>
+<h4 id="_sonarqubenexus用サーバ">2.3.2. SonarQube・Nexus用サーバ</h4>
 <div class="paragraph">
-<p>このサーバでは、CI/CDツール実行後にテスト結果とビルド資産を配置するためにSonarQubeとNexusが起動しています。
-* サーバスペック
+<p>このサーバでは、CI/CDツール実行後にテスト結果とビルド資産を配置するためにSonarQubeとNexusが起動しています。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>サーバスペック<br>
 サーバは下記のよう設定しています。</p>
+</li>
+</ul>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
 <caption class="title">表 3. サーバ</caption>
@@ -1339,7 +1397,7 @@ workflows:
 <ul>
 <li>
 <p>「CircleCIサイト＞リファレンスページURL」 <br>
-<a href="https://circleci.com/docs/ja/2.0/configuration-reference/#section=reference" class="bare">https://circleci.com/docs/ja/2.0/configuration-reference/#section=reference</a></p>
+<a href="https://circleci.com/docs/ja/2.0/configuration-reference/=section=reference" class="bare">https://circleci.com/docs/ja/2.0/configuration-reference/=section=reference</a></p>
 </li>
 </ul>
 </div>
@@ -1652,8 +1710,9 @@ jobs:
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_設定ファイルの配置">3.4.4. 設定ファイルの配置</h4>
+</div>
+<div class="sect2">
+<h3 id="_設定ファイルの配置">3.5. 設定ファイルの配置</h3>
 <div class="paragraph">
 <p>作成した設定ファイルは、ルートディレクトリ直下の「.circleci」ディレクトリ配下に配置することでGitHubへの操作を契機としCircleCIによりCI/CDが実行されます。</p>
 </div>
@@ -1663,9 +1722,8 @@ jobs:
 </div>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="_webサイトcircleciで指定することについて">3.5. Webサイト(CircleCI)で指定することについて</h3>
+<h3 id="_webサイトcircleciで指定することについて">3.6. Webサイト(CircleCI)で指定することについて</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1674,11 +1732,17 @@ jobs:
 </ul>
 </div>
 <div class="paragraph">
-<p>ログイン方法等については、公式ドキュメントを参照<br>
-* ＜CircleCI公式ドキュメント＞  <a href="https://circleci.com/docs/" class="bare">https://circleci.com/docs/</a></p>
+<p>ログイン方法等については、公式ドキュメントを参照</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>＜CircleCI公式ドキュメント＞  <a href="https://circleci.com/docs/" class="bare">https://circleci.com/docs/</a></p>
+</li>
+</ul>
 </div>
 <div class="sect3">
-<h4 id="_対象リポジトリの登録">3.5.1. 対象リポジトリの登録</h4>
+<h4 id="_対象リポジトリの登録">3.6.1. 対象リポジトリの登録</h4>
 <div class="paragraph">
 <p>「Add Projects」よりCI/CD対象のリポジトリ登録を行います。<br>
 Github上のリポジトリの公開設定に関わらず登録が可能です。<br>
@@ -1771,7 +1835,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </div>
 </div>
 <div class="sect3">
-<h4 id="_環境変数の登録">3.5.2. 環境変数の登録</h4>
+<h4 id="_環境変数の登録">3.6.2. 環境変数の登録</h4>
 <div class="paragraph">
 <p>「config.yml」や「build.gradle」に記載した環境変数はパイプライン起動時にCircleCI画面で設定した値に自動的に置き換えられます。</p>
 </div>
@@ -1838,7 +1902,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 <div class="paragraph">
 <p>「CircleCIサイト＞環境変数の使い方」<br>
-<a href="https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-step" class="bare">https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-step</a></p>
+<a href="https://circleci.com/docs/2.0/env-vars/=setting-an-environment-variable-in-a-step" class="bare">https://circleci.com/docs/2.0/env-vars/=setting-an-environment-variable-in-a-step</a></p>
 </div>
 </td>
 </tr>
@@ -1846,7 +1910,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="sect3">
-<h4 id="_実行結果の発報">3.5.3. 実行結果の発報</h4>
+<h4 id="_実行結果の発報">3.6.3. 実行結果の発報</h4>
 <div class="paragraph">
 <p>パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。</p>
 </div>
@@ -1881,7 +1945,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="sect3">
-<h4 id="_organizationアカウントのrepositoryを参照するための設定">3.5.4. Organizationアカウントのrepositoryを参照するための設定</h4>
+<h4 id="_organizationアカウントのrepositoryを参照するための設定">3.6.4. Organizationアカウントのrepositoryを参照するための設定</h4>
 <div class="paragraph">
 <p>1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行う。</p>
 </div>
@@ -1976,7 +2040,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 <div id="footer">
 <div id="footer-text">
-最終更新 2020-04-15 16:46:51 +0900
+最終更新 2020-04-20 11:43:49 +0900
 </div>
 </div>
 <style>

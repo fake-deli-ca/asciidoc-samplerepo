@@ -5,6 +5,7 @@ https://github.com/check-c-search/gh_pages_acr_result
 2020-04-15
 :Revision: 2.0.0
 :toc: left
+:toclevels: 3
 
 // 章ごとにインクルードしていく（画像パスも上書きすること）
 :imagesdir: Chapter01/images

@@ -34,7 +34,7 @@ SaaS型ツールの代表例としては、特に運用事例の多い下記3ツ
 
 デプロイ:: ビルドに成功したAPを実行環境にデプロイします。
 
-#### ブランチ戦略
+==== ブランチ戦略
 アプリケーションはGitHubのリポジトリで管理し、状態毎に下記のブランチを切って管理を行います。
 
 .ブランチ戦略
@@ -48,7 +48,7 @@ PRをmergeした際にレビュー担当者が削除する
 リリース完了後にライブラリ管理者が削除する
 |=======================
 
-#### タグによるリリースバージョン管理
+==== タグによるリリースバージョン管理
 アプリケーションのリリースバージョンはGitHubのタグで管理し、CI/CD内で下記の様式に従ってタグを生成する。
 
 .タグ
@@ -59,7 +59,7 @@ PRをmergeした際にレビュー担当者が削除する
 |master  |version-＜メジャーバージョン＞.＜マイナーバージョン＞.＜リビジョンバージョン＞-RELEASE  |releaseした際
 |=======================
 
-#### ブランチ毎のCI/CDフロー
+==== ブランチ毎のCI/CDフロー
 パイプライン上ではブランチ毎に下記の処理を実行する。
 
 [cols="2,6,7a", options="header"]
@@ -195,7 +195,7 @@ https://circleci.com/docs/
 特に下記ページを起点にすると、設定ファイル全体の内どの部分にあたる記述なのかをイメージしやすく、作業を効率よく進められます。
 
 * 「CircleCIサイト＞リファレンスページURL」  +
-https://circleci.com/docs/ja/2.0/configuration-reference/#section=reference
+https://circleci.com/docs/ja/2.0/configuration-reference/=section=reference
 ====
 
 ==== SonarQube連携方法
@@ -385,7 +385,7 @@ Nexus画面には下図のように表示される。
 
 image::fig_61.png[nexus, 640]
 
-==== 設定ファイルの配置
+=== 設定ファイルの配置
 作成した設定ファイルは、ルートディレクトリ直下の「.circleci」ディレクトリ配下に配置することでGitHubへの操作を契機としCircleCIによりCI/CDが実行されます。
 
 image::fig_01.png[github_rootdirectory, 640]
@@ -395,7 +395,8 @@ image::fig_01.png[github_rootdirectory, 640]
 
 * 「CircleCIサイトURL」 https://circleci.com +
 
-ログイン方法等については、公式ドキュメントを参照 +
+ログイン方法等については、公式ドキュメントを参照
+
 * ＜CircleCI公式ドキュメント＞  https://circleci.com/docs/
 
 ==== 対象リポジトリの登録
@@ -480,7 +481,7 @@ image::fig_24.png[add_env, 640]
 詳細は下記URLを参照。
 
 「CircleCIサイト＞環境変数の使い方」 +
-https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-step
+https://circleci.com/docs/2.0/env-vars/=setting-an-environment-variable-in-a-step
 ====
 
 ==== 実行結果の発報
@@ -541,5 +542,4 @@ image::fig_47.png[organization, 640]
 リポジトリへのアクセス権限が「書込み」以上の場合、下図に示すように「ProjectSettings」が活性になるため環境変数を含め、リポジトリの設定を変更することが可能です。
 
 image::fig_48.png[organization, 640]
-
 ====
