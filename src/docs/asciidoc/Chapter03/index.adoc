@@ -484,10 +484,10 @@ https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-ste
 ====
 
 ==== 実行結果の確認
-CI/CD実施後、CircleCI画面では実行されたパイプラインについて、下記の手順でワークフロー単位・Job単位での実行結果の確認を行います。 +
+CircleCI画面では実行されたパイプラインについて、下記の手順でワークフロー単位・Job単位での実行結果の確認を行います。 +
 また、エラーが発生した場合には、適宜パイプラインの再実行を設定します。
 
-* サイドバーの「Pipelines」を選択することで、下図のようにパイプライン単位でCI/CD結果を確認することができます。
+* サイドバーの「Pipelines」を選択することで、下図のようにパイプライン単位で実行結果を確認することができます。
 
 image::fig_71.png[cicd_result, 640]
 
@@ -514,7 +514,7 @@ image::fig_74.png[cicd_result, 512]
 ====
 
 
-* Pipelines画面でパイプラインの「STATUS」または「WORKFLOW」を押すと下図のようにワークフロー単位でのCI/CD結果を確認できます。
+* Pipelines画面でパイプラインの「STATUS」または「WORKFLOW」を押すと下図のようにワークフロー単位での実行結果を確認できます。
 
 image::fig_75.png[cicd_result, 640]
 
@@ -536,7 +536,7 @@ image::fig_77.png[cicd_result, 512]
 image::fig_78.png[cicd_result, 640]
 
 
-* ワークフロー確認画面で任意のJobを選択すると下図のようにJob単位でのCI/CD結果を確認することができます。 +
+* ワークフロー確認画面で任意のJobを選択すると下図のようにJob単位での実行結果を確認することができます。 +
 また、各ステップは「▶」を押すことで展開可能です。
 
 image::fig_79.png[cicd_result, 640]
@@ -586,7 +586,7 @@ image::fig_87.png[cicd_result, 640]
 
 
 ==== 実行結果の発報
-パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。
+パイプライン実行結果をPJのチャットツール（このガイドラインではSlack ）に連携する。
 
 1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定する。
 
@@ -594,7 +594,7 @@ image::fig_31.png[add_slack, 640]
 
 [TIP]
 ====
-実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携される。 +
+実行結果は、下記の方式でCircleCI及びGitHubへのリンク付きで連携される。 +
 正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知する。 +
 異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知する。
 
@@ -607,7 +607,7 @@ image::fig_32.png[add_slack, 640]
 image::fig_41.png[organization, 640]
 
 
-2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開く。
+2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、Github画面を開く。
 
 image::fig_42.png[organization, 640]
 

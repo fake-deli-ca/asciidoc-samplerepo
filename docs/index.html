@@ -1854,13 +1854,13 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="sect3">
 <h4 id="_実行結果の確認">3.5.3. 実行結果の確認</h4>
 <div class="paragraph">
-<p>CI/CD実施後、CircleCI画面では実行されたパイプラインについて、下記の手順でワークフロー単位・Job単位での実行結果の確認を行います。<br>
+<p>CircleCI画面では実行されたパイプラインについて、下記の手順でワークフロー単位・Job単位での実行結果の確認を行います。<br>
 また、エラーが発生した場合には、適宜パイプラインの再実行を設定します。</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>サイドバーの「Pipelines」を選択することで、下図のようにパイプライン単位でCI/CD結果を確認することができます。</p>
+<p>サイドバーの「Pipelines」を選択することで、下図のようにパイプライン単位で実行結果を確認することができます。</p>
 </li>
 </ul>
 </div>
@@ -1929,7 +1929,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="ulist">
 <ul>
 <li>
-<p>Pipelines画面でパイプラインの「STATUS」または「WORKFLOW」を押すと下図のようにワークフロー単位でのCI/CD結果を確認できます。</p>
+<p>Pipelines画面でパイプラインの「STATUS」または「WORKFLOW」を押すと下図のようにワークフロー単位での実行結果を確認できます。</p>
 </li>
 </ul>
 </div>
@@ -1985,7 +1985,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="ulist">
 <ul>
 <li>
-<p>ワークフロー確認画面で任意のJobを選択すると下図のようにJob単位でのCI/CD結果を確認することができます。<br>
+<p>ワークフロー確認画面で任意のJobを選択すると下図のようにJob単位での実行結果を確認することができます。<br>
 また、各ステップは「▶」を押すことで展開可能です。</p>
 </li>
 </ul>
@@ -2096,7 +2096,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="sect3">
 <h4 id="_実行結果の発報">3.5.4. 実行結果の発報</h4>
 <div class="paragraph">
-<p>パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。</p>
+<p>パイプライン実行結果をPJのチャットツール（このガイドラインではSlack ）に連携する。</p>
 </div>
 <div class="paragraph">
 <p>1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定する。</p>
@@ -2114,7 +2114,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </td>
 <td class="content">
 <div class="paragraph">
-<p>実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携される。<br>
+<p>実行結果は、下記の方式でCircleCI及びGitHubへのリンク付きで連携される。<br>
 正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知する。<br>
 異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知する。</p>
 </div>
@@ -2139,7 +2139,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="paragraph">
-<p>2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開く。</p>
+<p>2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、Github画面を開く。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2246,11 +2246,16 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="paragraph">
 <p>このガイドラインでは、下記のように開発チームようにOrganizationアカウントを一つ作成して個々のメンバーを招待する形を取ります。</p>
 </div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_51.png" alt="team_img" width="640">
+</div>
+</div>
 <div class="paragraph">
-<p>Organizationアカウント：リポジトリを作成してPJのソースコードを管理する<br>
-　↳メンバー①(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。<br>
-　↳メンバー②(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。<br>
-　↳メンバー③(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。<br></p>
+<p>※Organizationアカウント：リポジトリを作成してPJのソースコードを管理します<br>
+　オーナ(個別アカウント)：権限に応じてOrganizationアカウントのソースコードを編集します。<br>
+　メンバー①(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集します。<br>
+　メンバー②(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集します。<br></p>
 </div>
 <div class="sect3">
 <h4 id="_開発チーム用アカウントorganizationアカウントの作成">4.2.1. 開発チーム用アカウント(Organizationアカウント)の作成</h4>
@@ -2365,13 +2370,16 @@ Github Freeプランでは不可</p>
 <div class="ulist">
 <ul>
 <li>
-<p>＜Github公式ドキュメント＞<br></p>
+<p>＜Github公式ドキュメント＞<br>
+　<a href="https://help.github.com/ja/github/setting-up-and-managing-your-github-user-account" class="bare">https://help.github.com/ja/github/setting-up-and-managing-your-github-user-account</a></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>PJでは開発モジュール単位や機能単位にリポジトリを切って開発を行うため、様々なリポジトリが存在します。<br>
-これらのリポジトリ毎にメンバー(所属するTm)の操作権限を詳細に設定する必要があることから、開発チーム用アカウントとしてはOrganizationアカウントを採用します。</p>
+また、これらのリポジトリ毎にメンバー(所属するTm)の操作権限を詳細に設定する必要があります。<br>
+このような運用を行う場合、開発チーム用アカウントとしては、個別アカウントではなくOrganizationアカウントが推奨されます。<br>
+そのため、開発チーム用アカウントとしてOrganizationアカウントを採用します。</p>
 </div>
 <div class="paragraph">
 <p>【手順】</p>
@@ -2796,7 +2804,7 @@ Job単位の通過情報に記載の「Details」がCircleCIへのリンクと�
 </div>
 <div id="footer">
 <div id="footer-text">
-最終更新 2020-04-21 12:08:46 +0900
+最終更新 2020-04-21 18:03:10 +0900
 </div>
 </div>
 <style>
