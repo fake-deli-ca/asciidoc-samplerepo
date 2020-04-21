@@ -25,7 +25,7 @@ SaaS型ツールの代表例としては、特に運用事例の多い下記3ツ
 ==== CI/CDで行うことについて
 ローカル環境で作成・修正したアプリケーション（以降AP）に対して、下記の処理を自動実行します。
 
-ビルドチェック:: ビルドツールによるビルドを行うことで、各種ライブラリとの依存関係が解消されており、APが実行環境で動作可能な状態であることを保証します。
+ビルドチェック:: ビルドツールによるビルドを行うことで、各種ライブラリとの依存関係が解消されていて、APが実行環境で動作可能な状態であることを保証します。
 
 テスト:: ローカル環境で使用したテストコードでビルドしたAPのJunitテストを行います。  +
 また、SonarQubeによる静的検証（Checkstyle、SpotBugs）を行います。
@@ -97,14 +97,117 @@ PRをmergeした際にレビュー担当者が削除する
 |===
 
 === SonarQube連携について
-* Junitテストの結果を連携する
-* Checkstyleによる静的検証を実施する
-* SpotBugsによる静的検証を実施する
-* カバレッジ情報を表示する
+SonarQubeではリポジトリごとにパイプライン中で実施したJunitテストの結果集積と静的検証の実施、
+カバレッジ情報の算出を行うことで、開発/修正したソースコードの品質管理を行います。
+
+==== Junitテスト結果連携
+パイプラインで実施された結果は、SonarQubeに連携されて下図のように情報が表示されます。
+
+image::fig_52.png[sonarqube, 640]
+
+==== カバレッジ情報
+Junitテストコードのカバレッジは以下のように表示されます。
+
+* 概要
+
+image::fig_54.png[sonarqube, 640]
+
+* 詳細
+
+image::fig_53.png[sonarqube, 640]
+
+
+==== 静的検証
+SonarQubeで実施する静的検証は、下記のように「設定＞MarketPlace」から定義をインストールして設定します。 +
+今回は「Checkstyle」と「SpotBugs」を実施していますが、実運用ではPJのルールに従って適宜設定を行います。
+
+image::fig_55.png[sonarqube, 640]
+
 
 === Nexus連携について
-* PRをmergeしたタイミングでSNAPSHOTリポジトリにビルド資産を連携する
-* releaseブランチをGitHub上に作成したタイミングでRELEASEリポジトリにビルド資産を連携する
+Nexusではリポジトリごとにビルド成果物を連携することで、実環境で動くことが保証されたアプリケーションのバージョン管理を行います。
+
+==== Nexus連携の契機
+* PRをmergeしたタイミングでSNAPSHOTリポジトリにビルド資産を連携します
+
+[TIP]
+====
+後述するように同バージョンのビルド資材格納を認めない運用とするため、issueブランチをGithubに登録するタイミングで、バージョンの設定を行う必要があります。 +
+また、SNAPSHOTリポジトリは「XXX-SNAPSHOT」形式のバージョン名しか登録できません。
+
+[source]
+[caption="build.gradle："]
+.バージョンの変更
+----
+…
+##issueブランチ作成時にバージョンのを一つ上げます。
+version "1.1.0-SNAPSHOT"
+…
+----
+====
+
+* releaseブランチをGitHub上に作成したタイミングでRELEASEリポジトリにビルド資産を連携します。
+
+[TIP]
+====
+SNAPSHOT同様に同バージョンのビルド資材格納を認めない運用とするため、releaseブランチをGithubに登録するタイミングで、バージョンの設定を行う必要があります。 +
+
+[source]
+[caption="build.gradle："]
+.バージョンの変更
+----
+…
+##issueブランチ作成時にバージョンのを一つ上げます。
+version "1.1.0-RELEASE"
+…
+----
+====
+
+==== リポジトリの設定
+各リポジトリは、以下の設定となっています。 +
+その他の項目はデフォルト値です。
+
+[cols="1,1,2,1", options="header"]
+.リポジトリ設定
+|===
+|リポジトリ
+|リポジトリタイプ
+|バージョンポリシー
+|同バージョンのデプロイ可否
+（Deployment policy）
+
+|SNAPSHOTリポジトリ
+|hosted +
+[small]#※独自のリポジトリを作成する#
+|Snapshot +
+[small]#※スナップショット版のライブラリだけを含むリポジトリ#
+|Disable redploy
+
+|RELEASEリポジトリ
+|hosted +
+[small]#※独自のリポジトリを作成する#
+|Release +
+[small]#※リリース版のライブラリだけを含むリポジトリ#
+|Disable redploy
+|===
+
+* SNAPSHOTリポジトリ
+
+image::fig_62.png[nexus, 640]
+
+
+* RELEASEリポジトリ
+
+image::fig_63.png[nexus, 640]
+
+[TIP]
+=====
+リポジトリ設定については、下記がとても参考になります。
+
+* ＜Sonatype Nexus で Maven リポジトリを構築しよう＞ +
+　　https://weblabo.oscasierra.net/sonatype-nexus-1/
+=====
+
 
 === 設定ファイルで指定することについて
 ==== 設定ファイルの記載方法
@@ -199,8 +302,8 @@ https://circleci.com/docs/ja/2.0/configuration-reference/#section=reference
 ====
 
 ==== SonarQube連携方法
-<1> build.gradleファイルに下記の記載を行う
-<2> config.ymlファイルに下記の記載を行う
+<1> build.gradleファイルに下記の記載を行います
+<2> config.ymlファイルに下記の記載を行います
 
 [source]
 [caption="build.gradle："]
@@ -221,7 +324,7 @@ sonarqube {
 [caption="config.yml："]
 .sonarqubeタスクの呼び出し
 -----
-##"./gradlew sonarqube"コマンドによるSonerQubeサイトで設定した検証の実施と結果連携を行う。
+##"./gradlew sonarqube"コマンドによるSonerQubeサイトで設定した検証の実施と結果連携を行います。
 jobs:
 …
   sonarqube:
@@ -291,8 +394,8 @@ https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-gradle/
 ====
 
 ==== Nexus連携方法
-<1> build.gradleファイルに下記の記載を行う
-<2> config.ymlファイルに下記の記載を行う
+<1> build.gradleファイルに下記の記載を行います
+<2> config.ymlファイルに下記の記載を行います
 
 [source]
 [caption="build.gradle："]
@@ -395,7 +498,8 @@ image::fig_01.png[github_rootdirectory, 640]
 
 * 「CircleCIサイトURL」 https://circleci.com +
 
-ログイン方法等については、公式ドキュメントを参照 +
+ログイン方法等については、公式ドキュメントを参照
+
 * ＜CircleCI公式ドキュメント＞  https://circleci.com/docs/
 
 ==== 対象リポジトリの登録
@@ -403,44 +507,44 @@ image::fig_01.png[github_rootdirectory, 640]
 Github上のリポジトリの公開設定に関わらず登録が可能です。 +
 また、後述する設定を行うことで自身が所属するOrganization所有のリポジトリを権限に応じて利用可能です。
 
-1 ダッシュボード画面より「Add Projects」を選択する。
+1 ダッシュボード画面より「Add Projects」を選択します。
 
 image::fig_11.png[add_repository, 640]
 
 
-2 GitHub側の公開設定に関わらず、全リポジトリが表示されるので対象とするリポジトリを選択する。
+2 GitHub側の公開設定に関わらず、全リポジトリが表示されるので対象とするリポジトリを選択します。
 
 image::fig_12.png[add_repository, 640]
 
 
-3 ビルドツールを選択して、「Start Building」でリポジトリ登録を開始する。
+3 ビルドツールを選択して、「Start Building」でリポジトリ登録を開始します。
 
 image::fig_13.png[add_repository, 640]
 
-4 「Start Building」を押すと下記のポップアップが表示されるので適宜「Add Manually」か「Add Config」を選択する。
+4 「Start Building」を押すと下記のポップアップが表示されるので適宜「Add Manually」か「Add Config」を選択します。
 
 image::fig_14.png[add_repository, 640]
 
 [TIP]
 ====
-「Add Config」を選択した場合、図に表示されているようにブランチが作成され、.circleci配下に設定ファイル（config.yml）が作成される。
-その後、設定ファイルに基づいて初回のパイプライン実行が行われる。
+「Add Config」を選択した場合、図に表示されているようにブランチが作成され、.circleci配下に設定ファイル（config.yml）が作成されます。
+その後、設定ファイルに基づいて初回のパイプライン実行が行われます。
  ※設定ファイルの内容は前画面で表示されたデフォルトの内容になるので、初回のパイプライン実行は上手くいかないことが多いです。
 ====
 [TIP]
 ====
-Add Manually」を選択した場合、下記のポップアップが表示されるので適宜設定ファイルを.circleci配下に準備してから「Start Building」をクリックする。 +
+[Add Manually」を選択した場合、下記のポップアップが表示されるので適宜設定ファイルを.circleci配下に準備してから「Start Building」をクリックします。 +
  ※下図にあるように「Download config.yml」で設定ファイルをダウンロードすることも可能です。 +
- ※設定ファイルの内容は、前画面で表示された内容のものです。
+ ※設定ファイルの内容は、前画面で表示された内容のものになります。
 
 image::fig_15.png[add_repository, 640]
 ====
 
-4 初期パイプライン実行が行われると、下図のように実行が表示される。
+4 初期パイプライン実行が行われると、下図のように実行結果が表示されます。
 
 image::fig_16.png[add_repository, 640]
 
-5 登録済みのリポジトリは「Set Up Project」ボタンが「Unfollow Project」ボタンに変わっているので、これを押すとリポジトリ登録が解除される。
+5 登録済みのリポジトリは「Set Up Project」ボタンが「Unfollow Project」ボタンに変わっているので、これを押すとリポジトリ登録が解除されます。
 
 image::fig_17.png[add_repository, 640]
 
@@ -452,30 +556,30 @@ image::fig_17.png[add_repository, 640]
 そのため、特に理由がないのであればリポジトリの設定に関わらず [red]#秘匿情報は環境変数としてWeb-UIで設定すること#。
 ====
 
-1 対象リポジトリのパイプライン画面より「Project Settings」を選択する。
+1 対象リポジトリのパイプライン画面より「Project Settings」を選択します。
 
 image::fig_21.png[add_env, 640]
 
 
-2 Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できる。 +
-Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できる。
+2 Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できます。 +
+Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できます。
 
 image::fig_22.png[add_env, 640]
 
 
-3 「Add Config Variable」を押すと下記のポップアップが表示されるので、任意の環境変数と変数値を入力して「Add Environment Variable」を押す。 +
-　既存の環境変数を入力すると変数値を置き換えることができる。
+3 「Add Config Variable」を押すと下記のポップアップが表示されるので、任意の環境変数と変数値を入力して「Add Environment Variable」を押します。 +
+　既存の環境変数を入力すると変数値を置き換えることができます。
 
 image::fig_23.png[add_env, 640]
 
 
-4 「✕」を押すと下記のポップアップが表示されるので、テキストボックスに「DELETE」と入力して「Delete Environment Variable」を押す。
+4 「✕」を押すと下記のポップアップが表示されるので、テキストボックスに「DELETE」と入力して「Delete Environment Variable」を押します。
 
 image::fig_24.png[add_env, 640]
 
 [TIP]
 ====
-自分で設定する環境変数以外にも、CircleCIデフォルトで準備されている環境変数が存在する。 +
+自分で設定する環境変数以外にも、CircleCIデフォルトで準備されている環境変数が存在します。 +
 それらについては、特に宣言することなく設定ファイル中で利用可能です。 +
 詳細は下記URLを参照。
 
@@ -484,34 +588,34 @@ https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-ste
 ====
 
 ==== 実行結果の発報
-パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。
+パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携します。
 
-1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定する。
+1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定します。
 
 image::fig_31.png[add_slack, 640]
 
 [TIP]
 ====
-実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携される。 +
-正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知する。 +
-異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知する。
+実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携されます。 +
+正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知します。 +
+異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知します。
 
 image::fig_32.png[add_slack, 640]
 ====
 
 ==== Organizationアカウントのrepositoryを参照するための設定
-1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行う。
+1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行います。
 
 image::fig_41.png[organization, 640]
 
 
-2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開く。
+2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開きます。
 
 image::fig_42.png[organization, 640]
 
 
-3 画面下の「Organization access」に自信が所属しているOrganizationが表示されるので、その内容を確認して「Grant」ボタンを押下する。 +
-　この操作でOrganization所有のリポジトリを参照できるようになる。
+3 画面下の「Organization access」に自身が所属しているOrganizationが表示されるので、その内容を確認して「Grant」ボタンを押します。 +
+　この操作でOrganization所有のリポジトリを参照できるようになります。
 
 image::fig_43.png[organization, 640]
 
@@ -519,14 +623,14 @@ image::fig_44.png[organization, 640]
 
 [TIP]
 ====
-Organization所有のリポジトリについては、Organization内での自アカウントの権限によって操作が制限される。
+Organization所有のリポジトリについては、Organization内での自アカウントの権限によって操作が制限されます。
 
 * リポジトリの参照
-管理者権限のあるリポジトリについては、個人アカウント同様に「リポジトリの登録」「登録解除」を行うことができる。 +
- ※ただし、リポジトリ解除できるのは自身が登録したリポジトリに限られる。 +
-その他のリポジトリについては、「リポジトリの参照」「参照解除」を行うことができる。
- ※ただし、管理者によって登録が解除されているリポジトリについては参照不可（鍵のマークがつく） +
-また、GitHub上での権限設定がCircleCIに反映されるまで若干のタイムラグが存在する。
+管理者権限のあるリポジトリについては、個人アカウント同様に「リポジトリの登録」「登録解除」を行うことができます。 +
+ ※ただし、リポジトリ解除できるのは自身が登録したリポジトリに限られます。 +
+その他のリポジトリについては、「リポジトリの参照」「参照解除」を行うことができます。
+ ※ただし、管理者によって登録が解除されているリポジトリについては参照不可（鍵のマークがつく）です +
+また、GitHub上での権限設定がCircleCIに反映されるまで若干のタイムラグが存在します。
 
 image::fig_45.png[organization, 640]
 

@@ -533,19 +533,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>アプリケーションはJavaによるWebアプリケーション（以下AP）を対象とする</p>
+<p>アプリケーションはJavaによるWebアプリケーション（以下AP）を対象とします</p>
 </li>
 <li>
-<p>APの開発フレームワークは「SpringBoot」を利用</p>
+<p>APの開発フレームワークは「SpringBoot」を利用します</p>
 </li>
 <li>
-<p>APのビルドツールは「Gradle」を利用</p>
+<p>APのビルドツールは「Gradle」を利用します</p>
 </li>
 <li>
-<p>ビルド成果物は単独のjarファイル</p>
+<p>ビルド成果物は単独のjarファイルです</p>
 </li>
 <li>
-<p>APサーバ上では、"java -jar"コマンドでjarを実行する処理をShellに記載し、サービス登録することでWebアプリケーションが動いている</p>
+<p>APサーバ上では、"java -jar"コマンドでjarを実行する処理をShellに記載し、サービス登録することでWebアプリケーションが動いています</p>
 </li>
 </ul>
 </div>
@@ -623,6 +623,64 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <img src="Chapter02/images/fig_01.png" alt="vpc" width="640">
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>VPCのCIDRブロックは、下記の3種から選択することができます。<br></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>今回は検証をメインとした開発のため最小規模の「192.168.0.0/16」を選択しました。</p>
+</li>
+<li>
+<p>実運用においては、「システム規模」や「連携先システム間のプライベートIP重複」、「要件変更によるシステムの拡大」を考慮して大きめに指定する必要があります。</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>CIDRブロックはVPC作成後に変更することができません。</p>
+</div>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 1. CIDRブロック</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">CIDRブロック</th>
+<th class="tableblock halign-left valign-top">利用可能なプライベートIP数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">192.168.0.0/16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">65,532</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">172.16.0.0/12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1,048,576</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10.0.0.0/8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16,777,212</p></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_vswith">2.2.2. VSwith</h4>
@@ -631,18 +689,43 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 後述するECS(仮想サーバ)やSLB(ロードバランサ)等のインスタンスはVSwith上に作成することになります。<br></p>
 </div>
 <div class="paragraph">
-<p>設定は、VPC作成時にVPCコンソールから行う他、下図のようにVSwithコンソールから行います</p>
+<p>設定はVPC作成時にVPCコンソールから行う他、下図のようにVSwithコンソールから行います</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="Chapter02/images/fig_02.png" alt="vpc" width="640">
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>VSwithを作成することで、VPC内にサブネットを作成することができます。<br>
+ただし、1VPC当たりのVSwith数の上限は24個までとなります。+</p>
+</li>
+<li>
+<p>VSwithのゾーンには、VPCのリージョンに対応するゾーンを選択します。<br>
+　<span class="small">例えば、リージョンが「Japan (Tokyo)」の場合は「Tokyo Zone A」または「Tokyo Zone B」を選択します。</span><br>
+各ゾーン間は別ネットワークとなるため、イントラネットを介して相互通信を行います。<br>
+そのため、異なるゾーンにリソースを配備しておくことで一方のゾーンで障害が発生した際のリカバリーに備えるような運用ができます。</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_ecselastic_compute_service">2.2.3. ECS（Elastic Compute Service）</h4>
 <div class="paragraph">
-<p>AlibabaCloud上の仮想サーバがESCになります。<br>
+<p>AlibabaCloud上の仮想サーバがECSになります。<br>
 下図のようにESCコンソールより設定を行います。<br></p>
 </div>
 <div class="imageblock">
@@ -656,9 +739,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>ESCにアクセス可能なポート番号を設定します。<br>
 セキュリティグループに設定されていないポートは通信に使用することができません。<br>
-また、ポート毎にインバウンドおよびアウトバウンドのアクセス可否を設定することが可能です。<br>
-* インバウンド　：外部から内部への通信（外部PCからの自社サービスへのアクセス）
-* アウトバウンド：内部から外部への通信（インスタンスからの外部システムへのアクセス）</p>
+また、ポート毎にインバウンドおよびアウトバウンドのアクセス可否を設定することが可能です。<br></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>インバウンド　：外部から内部への通信（外部PCからの自社サービスへのアクセス）</p>
+</li>
+<li>
+<p>アウトバウンド：内部から外部への通信（インスタンスからの外部システムへのアクセス）</p>
+</li>
+</ul>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -711,14 +802,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_各サーバの構成について">2.3. 各サーバの構成について</h3>
 <div class="paragraph">
-<p>このガイドラインで取り扱うサーバについてい説明します。
-==== Webアプリケーション用サーバ
-このサーバでは、開発したAPが配置されています。
-* サーバスペック
-サーバは下記のよう設定しています。</p>
+<p>このガイドラインで取り扱うサーバについて説明します。</p>
+</div>
+<div class="sect3">
+<h4 id="_webアプリケーション用サーバ">2.3.1. Webアプリケーション用サーバ</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>このサーバには、開発したAPを配置します。</p>
+</li>
+<li>
+<p>サーバスペック<br></p>
+<div class="literalblock">
+<div class="content">
+<pre>今回配置するAPは1jarファイルからなる小規模なAPとなります。
+そのため、サーバのスペックは下記のように最低値のものを選択しています。
+実運用では、開発するAPの規模や同時実行するアプリケーション、想定されるアクセス数に応じて適したインスタンスを購入します。</pre>
+</div>
+</div>
+</li>
+</ul>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 1. サーバ</caption>
+<caption class="title">表 2. サーバ</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -745,12 +851,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tr>
 </tbody>
 </table>
+<div class="ulist">
+<ul>
+<li>
+<p>セキュリティグループ<br></p>
+<div class="literalblock">
+<div class="content">
+<pre>セキュリティグループについてはAPが80番号ポートで起動しているため、今回は80番ポートのみアクセス可能に設定しています。</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 2. セキュリティグループ</caption>
+<caption class="title">表 3. セキュリティグループ</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
 </colgroup>
 <thead>
 <tr>
@@ -763,15 +881,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">入力</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">80/80</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.0.0/0　※検証のためフルオープン</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.0.0/0<br>
+※検証のためフルオープン</p></td>
 </tr>
 </tbody>
 </table>
 <div class="ulist">
 <ul>
 <li>
-<p>アプリケーション起動方式
-APは、下図のようにAPを「Java -jar」コマンドにより起動するShellにより起動されます。</p>
+<p>アプリケーション起動方式</p>
+<div class="literalblock">
+<div class="content">
+<pre>APは、下図のようにAPを「Java -jar」コマンドにより起動するShellにより起動されます。</pre>
+</div>
+</div>
 </li>
 </ul>
 </div>
@@ -780,23 +903,37 @@ APは、下図のようにAPを「Java -jar」コマンドにより起動するS
 <img src="Chapter02/images/fig_31.png" alt="web" width="640">
 </div>
 </div>
-<div class="paragraph">
-<p>また、AP起動Shellは下図のように「/etc/systemd/system」配下にサービス登録がされており、「systemctl enable」コマンドによりESCインスタンス起動時に自動実行されるようになっています。</p>
+<div class="literalblock">
+<div class="content">
+<pre>また、AP起動Shellは下図のように「/etc/systemd/system」配下にサービス登録がされており、「systemctl enable」コマンドによりESCインスタンス起動時に自動実行されるようになっています。</pre>
+</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="Chapter02/images/fig_32.png" alt="web" width="640">
 </div>
 </div>
+</div>
 <div class="sect3">
-<h4 id="_sonarqubenexus用サーバ">2.3.1. SonarQube・Nexus用サーバ</h4>
-<div class="paragraph">
-<p>このサーバでは、CI/CDツール実行後にテスト結果とビルド資産を配置するためにSonarQubeとNexusが起動しています。
-* サーバスペック
-サーバは下記のよう設定しています。</p>
+<h4 id="_sonarqubenexus用サーバ">2.3.2. SonarQube・Nexus用サーバ</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>このサーバでは、CI/CDツール実行後にテスト結果とビルド資産を配置するためにSonarQubeとNexusが起動しています。</p>
+</li>
+<li>
+<p>サーバスペック<br></p>
+<div class="literalblock">
+<div class="content">
+<pre>このサーバでは、SonarQubとNexusに加えてリバースプロキシ用のNginx、PostgreSQL重めのアプリケーションを動かします。
+そのため、サーバのスペックは下記のように十分に運用に耐えられる値のものを選択しています。</pre>
+</div>
+</div>
+</li>
+</ul>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 3. サーバ</caption>
+<caption class="title">表 4. サーバ</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -823,12 +960,24 @@ APは、下図のようにAPを「Java -jar」コマンドにより起動するS
 </tr>
 </tbody>
 </table>
+<div class="ulist">
+<ul>
+<li>
+<p>セキュリティグループ<br></p>
+<div class="literalblock">
+<div class="content">
+<pre>セキュリティグループについてはSLBのヘルスチェック用に80番号ポートを、Nginxにつなぐために8080番ポートをアクセス可能に設定しています。</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 4. セキュリティグループ</caption>
+<caption class="title">表 5. セキュリティグループ</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
 </colgroup>
 <thead>
 <tr>
@@ -841,21 +990,27 @@ APは、下図のようにAPを「Java -jar」コマンドにより起動するS
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">入力</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">80/80</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.0.0/0　※検証のためフルオープン</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.0.0/0<br>
+※検証のためフルオープン</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">入力</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">8080/8080</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.0.0/0　※Nginxのポート番号</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0.0.0/0<br>
+※検証のためフルオープン</p></td>
 </tr>
 </tbody>
 </table>
 <div class="ulist">
 <ul>
 <li>
-<p>アプリケーション起動方式
-SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動しています。<br>
-各アプリケーションは、下図に示す設定でdocker起動しています。</p>
+<p>アプリケーション起動方式<br></p>
+<div class="literalblock">
+<div class="content">
+<pre>SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動しています。
+各アプリケーションは、下図に示す設定でdocker起動しています。</pre>
+</div>
+</div>
 </li>
 </ul>
 </div>
@@ -868,11 +1023,15 @@ SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動し�
 </div>
 <div class="sect2">
 <h3 id="_ネットワークの構成について">2.4. ネットワークの構成について</h3>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>各サーバは、下記のようにSLBによるパスルーティングによって外部から接続するように設定しています。</p>
+</li>
+</ul>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 5. パスルーティング設定</caption>
+<caption class="title">表 6. パスルーティング設定</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -912,8 +1071,8 @@ SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動し�
 <td class="content">
 <div class="paragraph">
 <p>SonarQube・Nexus用サーバではNginxのリバースプロキシにより、<br>
-「~/sonarqube」は9000番ポートに転送される　※SonarQubeのポート番号
-また、「~/nexus」は8001番ポートに転送される　※Nexusのポート番号</p>
+「~/sonarqube」は9000番ポート(SonarQubeのポート番号)に転送されます<br>
+また、「~/nexus」は8001番ポート(Nexusのポート番号)に転送されます。</p>
 </div>
 </td>
 </tr>
@@ -949,7 +1108,7 @@ SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動し�
 <p>SaaS型ツールの代表例としては、特に運用事例の多い下記3ツールが挙げられますが、このガイドラインでは、初期構築のしやすさの観点から「CircleCI」を例として指針を提示します。 <br></p>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 6. SaaS型CI/CDツール</caption>
+<caption class="title">表 7. SaaS型CI/CDツール</caption>
 <colgroup>
 <col style="width: 6.25%;">
 <col style="width: 18.75%;">
@@ -1000,7 +1159,7 @@ SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動し�
 <dl>
 <dt class="hdlist1">ビルドチェック</dt>
 <dd>
-<p>ビルドツールによるビルドを行うことで、各種ライブラリとの依存関係が解消されており、APが実行環境で動作可能な状態であることを保証します。</p>
+<p>ビルドツールによるビルドを行うことで、各種ライブラリとの依存関係が解消されていて、APが実行環境で動作可能な状態であることを保証します。</p>
 </dd>
 <dt class="hdlist1">テスト</dt>
 <dd>
@@ -1024,7 +1183,7 @@ SonarQubeとNexusはNginxによるリバースプロキシ制御下で起動し�
 <p>アプリケーションはGitHubのリポジトリで管理し、状態毎に下記のブランチを切って管理を行います。</p>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 7. ブランチ戦略</caption>
+<caption class="title">表 8. ブランチ戦略</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1069,7 +1228,7 @@ PRをmergeした際にレビュー担当者が削除する</p></td>
 <p>アプリケーションのリリースバージョンはGitHubのタグで管理し、CI/CD内で下記の様式に従ってタグを生成する。</p>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 8. タグ</caption>
+<caption class="title">表 9. タグ</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 72.7272%;">
@@ -1102,7 +1261,7 @@ PRをmergeした際にレビュー担当者が削除する</p></td>
 <p>パイプライン上ではブランチ毎に下記の処理を実行する。</p>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 9. CI/CDフロー</caption>
+<caption class="title">表 10. CI/CDフロー</caption>
 <colgroup>
 <col style="width: 13.3333%;">
 <col style="width: 40%;">
@@ -1184,34 +1343,221 @@ PRをmergeした際にレビュー担当者が削除する</p></td>
 </div>
 <div class="sect2">
 <h3 id="_sonarqube連携について">3.2. SonarQube連携について</h3>
+<div class="paragraph">
+<p>SonarQubeではリポジトリごとにパイプライン中で実施したJunitテストの結果集積と静的検証の実施、
+カバレッジ情報の算出を行うことで、開発/修正したソースコードの品質管理を行います。</p>
+</div>
+<div class="sect3">
+<h4 id="_junitテスト結果連携">3.2.1. Junitテスト結果連携</h4>
+<div class="paragraph">
+<p>パイプラインで実施された結果は、SonarQubeに連携されて下図のように情報が表示されます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_52.png" alt="sonarqube" width="640">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_カバレッジ情報">3.2.2. カバレッジ情報</h4>
+<div class="paragraph">
+<p>Junitテストコードのカバレッジは以下のように表示されます。</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Junitテストの結果を連携する</p>
-</li>
-<li>
-<p>Checkstyleによる静的検証を実施する</p>
-</li>
-<li>
-<p>SpotBugsによる静的検証を実施する</p>
-</li>
-<li>
-<p>カバレッジ情報を表示する</p>
+<p>概要</p>
 </li>
 </ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_54.png" alt="sonarqube" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>詳細</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_53.png" alt="sonarqube" width="640">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_静的検証">3.2.3. 静的検証</h4>
+<div class="paragraph">
+<p>SonarQubeで実施する静的検証は、下記のように「設定＞MarketPlace」から定義をインストールして設定します。<br>
+今回は「Checkstyle」と「SpotBugs」を実施していますが、実運用ではPJのルールに従って適宜設定を行います。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_55.png" alt="sonarqube" width="640">
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_nexus連携について">3.3. Nexus連携について</h3>
+<div class="paragraph">
+<p>Nexusではリポジトリごとにビルド成果物を連携することで、実環境で動くことが保証されたアプリケーションのバージョン管理を行います。</p>
+</div>
+<div class="sect3">
+<h4 id="_nexus連携の契機">3.3.1. Nexus連携の契機</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>PRをmergeしたタイミングでSNAPSHOTリポジトリにビルド資産を連携する</p>
-</li>
-<li>
-<p>releaseブランチをGitHub上に作成したタイミングでRELEASEリポジトリにビルド資産を連携する</p>
+<p>PRをmergeしたタイミングでSNAPSHOTリポジトリにビルド資産を連携します</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>後述するように同バージョンのビルド資材格納を認めない運用とするため、issueブランチをGithubに登録するタイミングで、バージョンの設定を行う必要があります。<br>
+また、SNAPSHOTリポジトリは「XXX-SNAPSHOT」形式のバージョン名しか登録できません。</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle：バージョンの変更</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>…
+##issueブランチ作成時にバージョンのを一つ上げます。
+version &quot;1.1.0-SNAPSHOT&quot;
+…</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>releaseブランチをGitHub上に作成したタイミングでRELEASEリポジトリにビルド資産を連携します。</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SNAPSHOT同様に同バージョンのビルド資材格納を認めない運用とするため、releaseブランチをGithubに登録するタイミングで、バージョンの設定を行う必要があります。<br></p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle：バージョンの変更</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>…
+##issueブランチ作成時にバージョンのを一つ上げます。
+version &quot;1.1.0-RELEASE&quot;
+…</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_リポジトリの設定">3.3.2. リポジトリの設定</h4>
+<div class="paragraph">
+<p>各リポジトリは、以下の設定となっています。<br>
+その他の項目はデフォルト値です。</p>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 11. リポジトリ設定</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">リポジトリ</th>
+<th class="tableblock halign-left valign-top">リポジトリタイプ</th>
+<th class="tableblock halign-left valign-top">バージョンポリシー</th>
+<th class="tableblock halign-left valign-top">同バージョンのデプロイ可否
+（Deployment policy）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SNAPSHOTリポジトリ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hosted<br>
+<span class="small">※独自のリポジトリを作成する</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Snapshot<br>
+<span class="small">※スナップショット版のライブラリだけを含むリポジトリ</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable redploy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RELEASEリポジトリ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hosted<br>
+<span class="small">※独自のリポジトリを作成する</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Release<br>
+<span class="small">※リリース版のライブラリだけを含むリポジトリ</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable redploy</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>SNAPSHOTリポジトリ</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_62.png" alt="nexus" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>RELEASEリポジトリ</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_63.png" alt="nexus" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>リポジトリ設定については、下記がとても参考になります。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>＜Sonatype Nexus で Maven リポジトリを構築しよう＞<br>
+　　<a href="https://weblabo.oscasierra.net/sonatype-nexus-1/" class="bare">https://weblabo.oscasierra.net/sonatype-nexus-1/</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1354,11 +1700,11 @@ workflows:
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>build.gradleファイルに下記の記載を行う</td>
+<td>build.gradleファイルに下記の記載を行います</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>config.ymlファイルに下記の記載を行う</td>
+<td>config.ymlファイルに下記の記載を行います</td>
 </tr>
 </table>
 </div>
@@ -1379,7 +1725,7 @@ sonarqube {
 <div class="listingblock">
 <div class="title">config.yml：sonarqubeタスクの呼び出し</div>
 <div class="content">
-<pre class="CodeRay highlight"><code>##&quot;./gradlew sonarqube&quot;コマンドによるSonerQubeサイトで設定した検証の実施と結果連携を行う。
+<pre class="CodeRay highlight"><code>##&quot;./gradlew sonarqube&quot;コマンドによるSonerQubeサイトで設定した検証の実施と結果連携を行います。
 jobs:
 …
   sonarqube:
@@ -1399,7 +1745,7 @@ jobs:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 10. sonarqubeタスクのプロパティ</caption>
+<caption class="title">表 12. sonarqubeタスクのプロパティ</caption>
 <colgroup>
 <col style="width: 12.5%;">
 <col style="width: 43.75%;">
@@ -1516,11 +1862,11 @@ jobs:
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>build.gradleファイルに下記の記載を行う</td>
+<td>build.gradleファイルに下記の記載を行います</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>config.ymlファイルに下記の記載を行う</td>
+<td>config.ymlファイルに下記の記載を行います</td>
 </tr>
 </table>
 </div>
@@ -1587,7 +1933,7 @@ jobs:
 </div>
 </div>
 <table class="tableblock frame-all grid-all stripes-even stretch">
-<caption class="title">表 11. publishingタスクのプロパティ</caption>
+<caption class="title">表 13. publishingタスクのプロパティ</caption>
 <colgroup>
 <col style="width: 13.3333%;">
 <col style="width: 40%;">
@@ -1674,8 +2020,14 @@ jobs:
 </ul>
 </div>
 <div class="paragraph">
-<p>ログイン方法等については、公式ドキュメントを参照<br>
-* ＜CircleCI公式ドキュメント＞  <a href="https://circleci.com/docs/" class="bare">https://circleci.com/docs/</a></p>
+<p>ログイン方法等については、公式ドキュメントを参照</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>＜CircleCI公式ドキュメント＞  <a href="https://circleci.com/docs/" class="bare">https://circleci.com/docs/</a></p>
+</li>
+</ul>
 </div>
 <div class="sect3">
 <h4 id="_対象リポジトリの登録">3.5.1. 対象リポジトリの登録</h4>
@@ -1685,7 +2037,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 また、後述する設定を行うことで自身が所属するOrganization所有のリポジトリを権限に応じて利用可能です。</p>
 </div>
 <div class="paragraph">
-<p>1 ダッシュボード画面より「Add Projects」を選択する。</p>
+<p>1 ダッシュボード画面より「Add Projects」を選択します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1693,7 +2045,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </div>
 </div>
 <div class="paragraph">
-<p>2 GitHub側の公開設定に関わらず、全リポジトリが表示されるので対象とするリポジトリを選択する。</p>
+<p>2 GitHub側の公開設定に関わらず、全リポジトリが表示されるので対象とするリポジトリを選択します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1701,7 +2053,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </div>
 </div>
 <div class="paragraph">
-<p>3 ビルドツールを選択して、「Start Building」でリポジトリ登録を開始する。</p>
+<p>3 ビルドツールを選択して、「Start Building」でリポジトリ登録を開始します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1709,7 +2061,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </div>
 </div>
 <div class="paragraph">
-<p>4 「Start Building」を押すと下記のポップアップが表示されるので適宜「Add Manually」か「Add Config」を選択する。</p>
+<p>4 「Start Building」を押すと下記のポップアップが表示されるので適宜「Add Manually」か「Add Config」を選択します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1724,8 +2076,8 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </td>
 <td class="content">
 <div class="paragraph">
-<p>「Add Config」を選択した場合、図に表示されているようにブランチが作成され、.circleci配下に設定ファイル（config.yml）が作成される。
-その後、設定ファイルに基づいて初回のパイプライン実行が行われる。
+<p>「Add Config」を選択した場合、図に表示されているようにブランチが作成され、.circleci配下に設定ファイル（config.yml）が作成されます。
+その後、設定ファイルに基づいて初回のパイプライン実行が行われます。
  ※設定ファイルの内容は前画面で表示されたデフォルトの内容になるので、初回のパイプライン実行は上手くいかないことが多いです。</p>
 </div>
 </td>
@@ -1740,9 +2092,9 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Add Manually」を選択した場合、下記のポップアップが表示されるので適宜設定ファイルを.circleci配下に準備してから「Start Building」をクリックする。<br>
+<p>[Add Manually」を選択した場合、下記のポップアップが表示されるので適宜設定ファイルを.circleci配下に準備してから「Start Building」をクリックします。<br>
  ※下図にあるように「Download config.yml」で設定ファイルをダウンロードすることも可能です。<br>
- ※設定ファイルの内容は、前画面で表示された内容のものです。</p>
+ ※設定ファイルの内容は、前画面で表示された内容のものになります。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1754,7 +2106,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </table>
 </div>
 <div class="paragraph">
-<p>4 初期パイプライン実行が行われると、下図のように実行が表示される。</p>
+<p>4 初期パイプライン実行が行われると、下図のように実行結果が表示されます。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1762,7 +2114,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </div>
 </div>
 <div class="paragraph">
-<p>5 登録済みのリポジトリは「Set Up Project」ボタンが「Unfollow Project」ボタンに変わっているので、これを押すとリポジトリ登録が解除される。</p>
+<p>5 登録済みのリポジトリは「Set Up Project」ボタンが「Unfollow Project」ボタンに変わっているので、これを押すとリポジトリ登録が解除されます。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1791,7 +2143,7 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </table>
 </div>
 <div class="paragraph">
-<p>1 対象リポジトリのパイプライン画面より「Project Settings」を選択する。</p>
+<p>1 対象リポジトリのパイプライン画面より「Project Settings」を選択します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1799,8 +2151,8 @@ Github上のリポジトリの公開設定に関わらず登録が可能です�
 </div>
 </div>
 <div class="paragraph">
-<p>2 Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できる。<br>
-Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できる。</p>
+<p>2 Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できます。<br>
+Project Settings画面で「Environment Variables」を選択して、「Add Config Variable」を押すことで環境変数と変数値を設定できます。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1808,8 +2160,8 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="paragraph">
-<p>3 「Add Config Variable」を押すと下記のポップアップが表示されるので、任意の環境変数と変数値を入力して「Add Environment Variable」を押す。<br>
-　既存の環境変数を入力すると変数値を置き換えることができる。</p>
+<p>3 「Add Config Variable」を押すと下記のポップアップが表示されるので、任意の環境変数と変数値を入力して「Add Environment Variable」を押します。<br>
+　既存の環境変数を入力すると変数値を置き換えることができます。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1817,7 +2169,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="paragraph">
-<p>4 「✕」を押すと下記のポップアップが表示されるので、テキストボックスに「DELETE」と入力して「Delete Environment Variable」を押す。</p>
+<p>4 「✕」を押すと下記のポップアップが表示されるので、テキストボックスに「DELETE」と入力して「Delete Environment Variable」を押します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1832,7 +2184,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </td>
 <td class="content">
 <div class="paragraph">
-<p>自分で設定する環境変数以外にも、CircleCIデフォルトで準備されている環境変数が存在する。<br>
+<p>自分で設定する環境変数以外にも、CircleCIデフォルトで準備されている環境変数が存在します。<br>
 それらについては、特に宣言することなく設定ファイル中で利用可能です。<br>
 詳細は下記URLを参照。</p>
 </div>
@@ -1848,10 +2200,10 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="sect3">
 <h4 id="_実行結果の発報">3.5.3. 実行結果の発報</h4>
 <div class="paragraph">
-<p>パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。</p>
+<p>パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携します。</p>
 </div>
 <div class="paragraph">
-<p>1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定する。</p>
+<p>1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1866,9 +2218,9 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </td>
 <td class="content">
 <div class="paragraph">
-<p>実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携される。<br>
-正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知する。<br>
-異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知する。</p>
+<p>実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携されます。<br>
+正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知します。<br>
+異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知します。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1883,7 +2235,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 <div class="sect3">
 <h4 id="_organizationアカウントのrepositoryを参照するための設定">3.5.4. Organizationアカウントのrepositoryを参照するための設定</h4>
 <div class="paragraph">
-<p>1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行う。</p>
+<p>1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行います。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1891,7 +2243,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="paragraph">
-<p>2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開く。</p>
+<p>2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開きます。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1899,8 +2251,8 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="paragraph">
-<p>3 画面下の「Organization access」に自信が所属しているOrganizationが表示されるので、その内容を確認して「Grant」ボタンを押下する。<br>
-　この操作でOrganization所有のリポジトリを参照できるようになる。</p>
+<p>3 画面下の「Organization access」に自身が所属しているOrganizationが表示されるので、その内容を確認して「Grant」ボタンを押します。<br>
+　この操作でOrganization所有のリポジトリを参照できるようになります。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1920,17 +2272,17 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Organization所有のリポジトリについては、Organization内での自アカウントの権限によって操作が制限される。</p>
+<p>Organization所有のリポジトリについては、Organization内での自アカウントの権限によって操作が制限されます。</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>リポジトリの参照
-管理者権限のあるリポジトリについては、個人アカウント同様に「リポジトリの登録」「登録解除」を行うことができる。<br>
- ※ただし、リポジトリ解除できるのは自身が登録したリポジトリに限られる。<br>
-その他のリポジトリについては、「リポジトリの参照」「参照解除」を行うことができる。
- ※ただし、管理者によって登録が解除されているリポジトリについては参照不可（鍵のマークがつく）<br>
-また、GitHub上での権限設定がCircleCIに反映されるまで若干のタイムラグが存在する。</p>
+管理者権限のあるリポジトリについては、個人アカウント同様に「リポジトリの登録」「登録解除」を行うことができます。<br>
+ ※ただし、リポジトリ解除できるのは自身が登録したリポジトリに限られます。<br>
+その他のリポジトリについては、「リポジトリの参照」「参照解除」を行うことができます。
+ ※ただし、管理者によって登録が解除されているリポジトリについては参照不可（鍵のマークがつく）です<br>
+また、GitHub上での権限設定がCircleCIに反映されるまで若干のタイムラグが存在します。</p>
 </li>
 </ul>
 </div>
@@ -1976,7 +2328,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 <div id="footer">
 <div id="footer-text">
-最終更新 2020-04-15 16:46:51 +0900
+最終更新 2020-04-21 13:08:04 +0900
 </div>
 </div>
 <style>
