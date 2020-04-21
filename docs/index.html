@@ -472,6 +472,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_webサイトcircleciで指定することについて">3.5. Webサイト(CircleCI)で指定することについて</a></li>
 </ul>
 </li>
+<li><a href="#_ソースコード開発チーム管理指針">4. ソースコード/開発チーム管理指針</a>
+<ul class="sectlevel2">
+<li><a href="#_概要_3">4.1. 概要</a></li>
+<li><a href="#_チーム管理">4.2. チーム管理</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1846,7 +1852,249 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="sect3">
-<h4 id="_実行結果の発報">3.5.3. 実行結果の発報</h4>
+<h4 id="_実行結果の確認">3.5.3. 実行結果の確認</h4>
+<div class="paragraph">
+<p>CI/CD実施後、CircleCI画面では実行されたパイプラインについて、下記の手順でワークフロー単位・Job単位での実行結果の確認を行います。<br>
+また、エラーが発生した場合には、適宜パイプラインの再実行を設定します。</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>サイドバーの「Pipelines」を選択することで、下図のようにパイプライン単位でCI/CD結果を確認することができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_71.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Pipelines画面の出力結果は、Filterとしてリポジトリ/コミットしたユーザ/ブランチでフィルタリングが可能です。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>パイプライン番号横の「▶」を押すと、ワークフローに属するJobごとの結果を確認することができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_72.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>パイプライン右の「・・・」を押すと、各パイプラインの設定ファイル（config.yml）の内容を確認することができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_73.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>設定ファイルの見方は、「Source」と「Compiled」があります。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_74.png" alt="cicd_result" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pipelines画面でパイプラインの「STATUS」または「WORKFLOW」を押すと下図のようにワークフロー単位でのCI/CD結果を確認できます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_75.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ワークフロー確認画面で「Return」を押すと下図のように再実行方法や実行停止を選択することができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_76.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>パイプラインが正常終了している場合は、「Rerun Workflow from Start」のみ選択することが可能ですが、異常終了している場合は「Rerun Workflow from Failed」も選択可能です。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_77.png" alt="cicd_result" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ワークフロー確認画面で「・・・」を押すと下図のように設定ファイル確認とProjectSettingを行うことができます。<br>
+※画面・内容については、既に説明済みのため省略</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_78.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ワークフロー確認画面で任意のJobを選択すると下図のようにJob単位でのCI/CD結果を確認することができます。<br>
+また、各ステップは「▶」を押すことで展開可能です。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_79.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>「Spin Up Environment」、「Preparing Environment Variables」については、設定ファイルの記述に関係なく実行されるデフォルトのStepです。<br>
+それぞれ実行環境の構築と環境変数の読み込みを行うStepです。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Job確認画面で「Return」を押すと下図のようにワークフロー確認画面と同様に再実行方法や実行停止を選択することができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_80.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Job確認画面で「・・・」を押すと下図のようにワークフロー確認画面と同様に設定ファイル確認とProjectSettingを行うことができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_81.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Job確認画面で任意のJobを選択することで、下図のようにJobの内容を確認することができます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_82.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Organization所有のリポジトリについて、リポジトリへのアクセス権限によって、パイプラインの操作可能範囲が異なります。</p>
+</li>
+<li>
+<p>リポジトリへのアクセス権限が「参照」の場合、下図に示すようにパイプラインの再実施等のRerun操作は不可能です。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_83.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>リポジトリへのアクセス権限が「書込み」以上の場合、Rerun操作が可能です。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_84.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>このガイドラインでは、2020年4月21日現在の最新画面レイアウトに基づいて説明しましたが、下図のように旧画面レイアウトでCircleCサイトを利用することも可能です。<br>
+見え方は若干異なっていますが、確認できる内容は前述のものと同じなので直感的に使いやすい方を使えばよいです。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_85.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_86.png" alt="cicd_result" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter03/images/fig_87.png" alt="cicd_result" width="640">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_実行結果の発報">3.5.4. 実行結果の発報</h4>
 <div class="paragraph">
 <p>パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。</p>
 </div>
@@ -1881,7 +2129,7 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 <div class="sect3">
-<h4 id="_organizationアカウントのrepositoryを参照するための設定">3.5.4. Organizationアカウントのrepositoryを参照するための設定</h4>
+<h4 id="_organizationアカウントのrepositoryを参照するための設定">3.5.5. Organizationアカウントのrepositoryを参照するための設定</h4>
 <div class="paragraph">
 <p>1 Organizationのリポジトリを登録する場合、自身のアイコンをクリックして「User Setting」画面より設定を行う。</p>
 </div>
@@ -1973,10 +2221,582 @@ Project Settings画面で「Environment Variables」を選択して、「Add Con
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_ソースコード開発チーム管理指針">4. ソースコード/開発チーム管理指針</h2>
+<div class="sectionbody">
+<hr>
+<div class="sect2">
+<h3 id="_概要_3">4.1. 概要</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>このガイドラインでは、バージョン管理ツールとしてGitHubを利用します。<br>
+＜Githubの公式サイト＞<br>
+  <a href="https://github.com/" class="bare">https://github.com/</a></p>
+</li>
+<li>
+<p>GithubではOrganizationアカウントを作成して、ソースコードの管理及び開発チームメンバの管理を行います。<br>
+また、CI/CDツール（今回はCircleCI）と連携することでPR時に対象のブランチがCI/CDを通過しているかどうかの確認を併せて行います。</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_チーム管理">4.2. チーム管理</h3>
+<div class="paragraph">
+<p>このガイドラインでは、下記のように開発チームようにOrganizationアカウントを一つ作成して個々のメンバーを招待する形を取ります。</p>
+</div>
+<div class="paragraph">
+<p>Organizationアカウント：リポジトリを作成してPJのソースコードを管理する<br>
+　↳メンバー①(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。<br>
+　↳メンバー②(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。<br>
+　↳メンバー③(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。<br></p>
+</div>
+<div class="sect3">
+<h4 id="_開発チーム用アカウントorganizationアカウントの作成">4.2.1. 開発チーム用アカウント(Organizationアカウント)の作成</h4>
+<div class="paragraph">
+<p>GitHubには、下記2種のアカウントが存在します。<br></p>
+</div>
+<table class="tableblock frame-all grid-all stripes-even stretch">
+<caption class="title">表 12. Githubアカウント</caption>
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">アカウント</th>
+<th class="tableblock halign-left valign-top">作成可能なリポジトリ</th>
+<th class="tableblock halign-left valign-top">他ユーザによるリポジトリ操作の制限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">個別アカウント</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>パブリック<br></p>
+</li>
+<li>
+<p>プライベート</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>ownerと同様の権限を持った共同編集者を設定可能</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>リポジトリの公開設定に関わらずアクセスが可能<br></p>
+</li>
+<li>
+<p>共同編集者に設定したユーザの詳細な操作権限を指定することはできない<br></p>
+</li>
+<li>
+<p>共同編集者はリポジトリ毎に設定する必要がある<br></p>
+</li>
+<li>
+<p>無料で追加できるのは3名まで<br>
+　※4人目以降はGithub Pro(＄4/月)プランに変更する必要がある</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organizationアカウント</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>パブリック<br></p>
+</li>
+<li>
+<p>プライベート<br>
+Github Freeプランでは不可</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Organizationアカウントにメンバーを招待することで、メンバー毎に各リポジトリへのアクセス権限を付与することが可能</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>ユーザ毎に詳細な操作権限を指定することが可能<br></p>
+</li>
+<li>
+<p>メンバーを招待後は、Github画面でGUI的に各リポジトリへの操作権限を指定できる<br></p>
+</li>
+<li>
+<p>Github Freeプランでも招待できるメンバーに制限がない</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>アカウントの詳細は、下記の公式ドキュメントを参照</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>＜Github公式ドキュメント＞<br></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>PJでは開発モジュール単位や機能単位にリポジトリを切って開発を行うため、様々なリポジトリが存在します。<br>
+これらのリポジトリ毎にメンバー(所属するTm)の操作権限を詳細に設定する必要があることから、開発チーム用アカウントとしてはOrganizationアカウントを採用します。</p>
+</div>
+<div class="paragraph">
+<p>【手順】</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;1&gt; Githubに個人アカウントでサインインして、「New organization」を選択する。
+    ※この時使用したアカウントがOrganizationアカウントのOwnerとなります。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_01.png" alt="organization" width="640">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;2&gt; 利用するプランを選択する。
+    ※この例では、Freeプランを選択していますが、
+      商用利用の場合は基本的にプライベートリポジトリ利用することになるので適宜プランを選択してください。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_02.png" alt="organization" width="640">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;3&gt; Organizationアカウントの情報を設定します。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_03.png" alt="organization" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>「This organization belong to」で「A business or institution」を選択した場合は下図のように組織名を指定します。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_04.png" alt="organization" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;4&gt; 最後に自分以外に招待するメンバーを指定して完了です。
+    ※ここでのメンバー招待はskip可能です。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_05.png" alt="organization" width="640">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_チーム管理_2">4.2.2. チーム管理</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Organizationアカウントにメンバーを招待する場合、下図のように予め「Settings＞Member privilegeas」にて新規メンバーの操作権限を設定しておきます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_11.png" alt="team" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>また、メンバー毎にリポジトリ別の操作権限を作成するために、「Teams＞New team」よりチームを作成しておきます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_12.png" alt="team" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_13.png" alt="team" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>「Team visibility」で「Secret」を選択した場合は、管理者権限の参照/編集が可能なチームになります。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_14.png" alt="team" width="512">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;1&gt; 管理者権限のメンバーの場合</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_15_1.png" alt="team" width="512">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;2&gt; 管理者権限以外のメンバーの場合</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_15_2.png" alt="team" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>チームを作成したら、下図のように「Repository」から対象のリポジトリを選択します。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_16.png" alt="team" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_17.png" alt="team" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>リポジトリ毎に操作権限を指定します。<br>
+これで、チームに所属するメンバには各リポジトリに対して設定した操作権限が付与されます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_18.png" alt="team" width="640">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>チームを作成したら、下図のように「Members＞Add a member」でチームに加えたいユーザを選択します。<br>
+※Organizationアカウントの作成者は、デフォルトで全てのチームに含まれます。</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_19.png" alt="team" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_20.png" alt="team" width="640">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="警告"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>チームにはGithubアカウントを持っている人なら誰でも招待できてしまうので、Githubユーザ名で検索を行う場合は予期せぬユーザをチームに追加しないように注意が必要です。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Organizationアカウントにメンバーを招待するには、下図のように「People＞Pending collaborators」にて新規メンバー招待を送ります。<br></p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_21.png" alt="member" width="640">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_22.png" alt="member" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>新規メンバーはデフォルトでMemberとして招待されますが下図のように「Edition invitaion」でメンバーの権限を「Member/Owner」で変更することが可能です。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_23.png" alt="member" width="512">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_24_1.png" alt="member" width="512">
+</div>
+</div>
+<div class="paragraph">
+<p>また、事前にチームを作成している場合は下図のように所属するチームを設定することができます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_24_2.png" alt="member" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ソースコード管理">4.2.3. ソースコード管理</h4>
+<div class="paragraph">
+<p>ソースコードの管理については、個人アカウントと同様に機能毎等、任意の単位でリポジトリを切ることが可能です。<br>
+また、各リポジトリへの操作権限は前述したようにTeamを作成することで、メンバー毎に詳細に指定することが可能です。</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cicd契機の設定">4.2.4. CI/CD契機の設定</h4>
+<div class="paragraph">
+<p>CircleCIやWerckerと言った代表的なSaaS型CI/CDツールを利用する場合、パイプライン起動の契機は全てCI/CDツール側で設定するためGithub上で何か特別な操作をする必要はありません。</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>設定方法はツールによって異なり、CircleCIのように設定ファイル中で設定するものや、WerckerのようにWebサイトで設定するものがあります。</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">CircleCI設定ファイル：パイプライン起動契機の設定</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>…
+jobs:
+　build:
+…
+
+workflows:
+…
+　workflow:
+　　jobs:
+　　　- build:
+  　　　　filters:
+  　　　　　branches:
+  　　　　　　only:
+  　　　　　　　- 対象とするブランチ名①
+  　　　　　　　- 対象とするブランチ名②
+…
+　nightly:
+　　triggers:
+　　　- schedule:
+　　　　　cron: &quot;25 * * * *&quot;
+　　　　　　filters:
+　　　　　　　branches:
+　　　　　　　　only:
+  　　　　　　　- 対象とするブランチ名②
+  …</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Werckerサイト：パイプライン起動契機の設定<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_31.png" alt="cicd" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cicd結果の確認">4.2.5. CI/CD結果の確認</h4>
+<div class="paragraph">
+<p>Github上でissueブランチからmasterへのPRが作成された際、レビューアはコード修正内容に加えて修正後のソースコードが実環境で動作するものであるか確認する必要があります。</p>
+</div>
+<div class="paragraph">
+<p>そのため、以下の手順でGithub上から各ブランチがCI/CDを正常に通過しているかどうか確認できるように設定します。</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;1&gt; PR時にCI/CD結果を確認したいリポジトリで「Settings」を開く。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_41.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;2&gt; SettingsのBranchesで「Branch protection rules」の「Add rule」を選択する。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_42.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;3&gt; 下図のように対象ブランチ名とルールを設定する画面になるので、「Branch name pattern」に対象ブランチ名のパターンを入力し、「Require status checks to pass before merging 」と「Require branches to be up to date before merging 」にチェックを入れる。
+その後、「Create」を押してルールを定義する。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_43.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;4&gt; ルール作成後、下図のように対象ブランチが表示されるので内容が正しいか確認を行う。</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_44.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>以上で、GitHubのでPR作成時にmerge対象のブランチがCI/CDを正常に通過しているか確認するための手順は完了です。</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>前述の設定を行うことで、下図のようにPR画面にmerge対象のブランチのCI/CD通過情報が表示されるようになります。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_45.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>また、「Show all checks」でJob単位の通過情報を確認することができます。<br>
+Job単位の通過情報に記載の「Details」がCircleCIへのリンクとなっており、CircleCIアカウントを持っていなくてもCircleCI画面で結果を確認することができます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_46.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="paragraph">
+<p>CI/CDでエラーが発生している場合は下図のように画面表示されます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_47.png" alt="cicd_github" width="640">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="ヒント"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>個々のブランチをpushやmergeした際のCI/CD通過情報についても、CircleCIと連携させるだけで下図のように「✔」「✕」が出力されるようになり、これをクリックすると、PR画面と同様にCircleCI画面へのリンクが張られた通過情報を確認することができます。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="Chapter04/images/fig_48.png" alt="cicd_github" width="512">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-最終更新 2020-04-15 16:46:51 +0900
+最終更新 2020-04-21 12:08:46 +0900
 </div>
 </div>
 <style>

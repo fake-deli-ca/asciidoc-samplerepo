@@ -1,0 +1,257 @@
+include::../attribute.adoc[]
+
+== ソースコード/開発チーム管理指針
+***
+=== 概要
+* このガイドラインでは、バージョン管理ツールとしてGitHubを利用します。 +
+ ＜Githubの公式サイト＞ +
+   https://github.com/
+
+* GithubではOrganizationアカウントを作成して、ソースコードの管理及び開発チームメンバの管理を行います。 +
+また、CI/CDツール（今回はCircleCI）と連携することでPR時に対象のブランチがCI/CDを通過しているかどうかの確認を併せて行います。
+
+=== チーム管理
+このガイドラインでは、下記のように開発チームようにOrganizationアカウントを一つ作成して個々のメンバーを招待する形を取ります。
+
+Organizationアカウント：リポジトリを作成してPJのソースコードを管理する +
+　↳メンバー①(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。 +
+　↳メンバー②(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。 +
+　↳メンバー③(個人アカウント)：権限に応じてOrganizationアカウントのソースコードを編集する。 +
+
+==== 開発チーム用アカウント(Organizationアカウント)の作成
+GitHubには、下記2種のアカウントが存在します。 +
+
+.Githubアカウント
+[cols="2,2a,5a", options="header"]
+|=======================
+|アカウント
+|作成可能なリポジトリ
+|他ユーザによるリポジトリ操作の制限
+
+|個別アカウント
+|
+* パブリック +
+* プライベート
+|ownerと同様の権限を持った共同編集者を設定可能
+[TIP]
+====
+* リポジトリの公開設定に関わらずアクセスが可能 +
+* 共同編集者に設定したユーザの詳細な操作権限を指定することはできない +
+* 共同編集者はリポジトリ毎に設定する必要がある +
+* 無料で追加できるのは3名まで +
+　※4人目以降はGithub Pro(＄4/月)プランに変更する必要がある
+====
+
+|Organizationアカウント
+|
+* パブリック +
+* プライベート +
+Github Freeプランでは不可
+|Organizationアカウントにメンバーを招待することで、メンバー毎に各リポジトリへのアクセス権限を付与することが可能
+[TIP]
+====
+* ユーザ毎に詳細な操作権限を指定することが可能 +
+* メンバーを招待後は、Github画面でGUI的に各リポジトリへの操作権限を指定できる +
+* Github Freeプランでも招待できるメンバーに制限がない
+====
+|=======================
+アカウントの詳細は、下記の公式ドキュメントを参照
+
+* ＜Github公式ドキュメント＞ +
+
+PJでは開発モジュール単位や機能単位にリポジトリを切って開発を行うため、様々なリポジトリが存在します。 +
+これらのリポジトリ毎にメンバー(所属するTm)の操作権限を詳細に設定する必要があることから、開発チーム用アカウントとしてはOrganizationアカウントを採用します。
+
+【手順】
+
+ <1> Githubに個人アカウントでサインインして、「New organization」を選択する。
+     ※この時使用したアカウントがOrganizationアカウントのOwnerとなります。
+
+image::fig_01.png[organization, 640]
+
+ <2> 利用するプランを選択する。
+     ※この例では、Freeプランを選択していますが、
+       商用利用の場合は基本的にプライベートリポジトリ利用することになるので適宜プランを選択してください。
+
+image::fig_02.png[organization, 640]
+
+ <3> Organizationアカウントの情報を設定します。
+
+image::fig_03.png[organization, 640]
+
+[TIP]
+====
+「This organization belong to」で「A business or institution」を選択した場合は下図のように組織名を指定します。
+
+image::fig_04.png[organization, 512]
+====
+
+ <4> 最後に自分以外に招待するメンバーを指定して完了です。
+     ※ここでのメンバー招待はskip可能です。
+
+image::fig_05.png[organization, 640]
+
+==== チーム管理
+* Organizationアカウントにメンバーを招待する場合、下図のように予め「Settings＞Member privilegeas」にて新規メンバーの操作権限を設定しておきます。
+
+image::fig_11.png[team, 640]
+
+
+* また、メンバー毎にリポジトリ別の操作権限を作成するために、「Teams＞New team」よりチームを作成しておきます。
+
+image::fig_12.png[team, 640]
+
+image::fig_13.png[team, 640]
+
+[TIP]
+====
+「Team visibility」で「Secret」を選択した場合は、管理者権限の参照/編集が可能なチームになります。
+
+image::fig_14.png[team, 512]
+
+
+ <1> 管理者権限のメンバーの場合
+
+image::fig_15_1.png[team, 512]
+
+ <2> 管理者権限以外のメンバーの場合
+
+image::fig_15_2.png[team, 512]
+====
+
+* チームを作成したら、下図のように「Repository」から対象のリポジトリを選択します。
+
+image::fig_16.png[team, 640]
+
+image::fig_17.png[team, 640]
+
+* リポジトリ毎に操作権限を指定します。 +
+これで、チームに所属するメンバには各リポジトリに対して設定した操作権限が付与されます。
+
+image::fig_18.png[team, 640]
+
+* チームを作成したら、下図のように「Members＞Add a member」でチームに加えたいユーザを選択します。 +
+※Organizationアカウントの作成者は、デフォルトで全てのチームに含まれます。
+
+image::fig_19.png[team, 640]
+
+image::fig_20.png[team, 640]
+
+[WARNING]
+====
+チームにはGithubアカウントを持っている人なら誰でも招待できてしまうので、Githubユーザ名で検索を行う場合は予期せぬユーザをチームに追加しないように注意が必要です。
+====
+
+* Organizationアカウントにメンバーを招待するには、下図のように「People＞Pending collaborators」にて新規メンバー招待を送ります。 +
+
+image::fig_21.png[member, 640]
+
+image::fig_22.png[member, 640]
+
+[TIP]
+====
+新規メンバーはデフォルトでMemberとして招待されますが下図のように「Edition invitaion」でメンバーの権限を「Member/Owner」で変更することが可能です。
+
+image::fig_23.png[member, 512]
+
+image::fig_24_1.png[member, 512]
+
+また、事前にチームを作成している場合は下図のように所属するチームを設定することができます。
+
+image::fig_24_2.png[member, 512]
+====
+
+==== ソースコード管理
+ソースコードの管理については、個人アカウントと同様に機能毎等、任意の単位でリポジトリを切ることが可能です。 +
+また、各リポジトリへの操作権限は前述したようにTeamを作成することで、メンバー毎に詳細に指定することが可能です。
+
+==== CI/CD契機の設定
+CircleCIやWerckerと言った代表的なSaaS型CI/CDツールを利用する場合、パイプライン起動の契機は全てCI/CDツール側で設定するためGithub上で何か特別な操作をする必要はありません。
+
+[TIP]
+====
+* 設定方法はツールによって異なり、CircleCIのように設定ファイル中で設定するものや、WerckerのようにWebサイトで設定するものがあります。
+
+[source]
+[caption="CircleCI設定ファイル："]
+.パイプライン起動契機の設定
+----
+…
+jobs:
+　build:
+…
+
+workflows:
+…
+　workflow:
+　　jobs:
+　　　- build:
+  　　　　filters:
+  　　　　　branches:
+  　　　　　　only:
+  　　　　　　　- 対象とするブランチ名①
+  　　　　　　　- 対象とするブランチ名②
+…
+　nightly:
+　　triggers:
+　　　- schedule:
+　　　　　cron: "25 * * * *"
+　　　　　　filters:
+　　　　　　　branches:
+　　　　　　　　only:
+  　　　　　　　- 対象とするブランチ名②
+  …
+----
+
+Werckerサイト：パイプライン起動契機の設定 +
+
+image::fig_31.png[cicd, 512]
+====
+
+==== CI/CD結果の確認
+Github上でissueブランチからmasterへのPRが作成された際、レビューアはコード修正内容に加えて修正後のソースコードが実環境で動作するものであるか確認する必要があります。
+
+そのため、以下の手順でGithub上から各ブランチがCI/CDを正常に通過しているかどうか確認できるように設定します。
+
+ <1> PR時にCI/CD結果を確認したいリポジトリで「Settings」を開く。
+
+image::fig_41.png[cicd_github, 640]
+
+
+ <2> SettingsのBranchesで「Branch protection rules」の「Add rule」を選択する。
+
+image::fig_42.png[cicd_github, 640]
+
+
+ <3> 下図のように対象ブランチ名とルールを設定する画面になるので、「Branch name pattern」に対象ブランチ名のパターンを入力し、「Require status checks to pass before merging 」と「Require branches to be up to date before merging 」にチェックを入れる。
+ その後、「Create」を押してルールを定義する。
+
+image::fig_43.png[cicd_github, 640]
+
+
+ <4> ルール作成後、下図のように対象ブランチが表示されるので内容が正しいか確認を行う。
+
+image::fig_44.png[cicd_github, 640]
+
+ 以上で、GitHubのでPR作成時にmerge対象のブランチがCI/CDを正常に通過しているか確認するための手順は完了です。
+
+
+前述の設定を行うことで、下図のようにPR画面にmerge対象のブランチのCI/CD通過情報が表示されるようになります。
+
+image::fig_45.png[cicd_github, 640]
+
+また、「Show all checks」でJob単位の通過情報を確認することができます。 +
+Job単位の通過情報に記載の「Details」がCircleCIへのリンクとなっており、CircleCIアカウントを持っていなくてもCircleCI画面で結果を確認することができます。
+
+image::fig_46.png[cicd_github, 640]
+
+CI/CDでエラーが発生している場合は下図のように画面表示されます。
+
+image::fig_47.png[cicd_github, 640]
+
+[TIP]
+====
+個々のブランチをpushやmergeした際のCI/CD通過情報についても、CircleCIと連携させるだけで下図のように「✔」「✕」が出力されるようになり、これをクリックすると、PR画面と同様にCircleCI画面へのリンクが張られた通過情報を確認することができます。
+
+image::fig_48.png[cicd_github, 512]
+====
