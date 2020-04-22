@@ -49,7 +49,7 @@ PRをmergeした際にレビュー担当者が削除する
 |=======================
 
 #### タグによるリリースバージョン管理
-アプリケーションのリリースバージョンはGitHubのタグで管理し、CI/CD内で下記の様式に従ってタグを生成する。
+アプリケーションのリリースバージョンはGitHubのタグで管理し、CI/CDのパイプライン内で下記の様式に従ってタグを生成する。
 
 .タグ
 [cols="1,8,2", options="header"]
@@ -386,7 +386,7 @@ Nexus画面には下図のように表示される。
 image::fig_61.png[nexus, 640]
 
 ==== 設定ファイルの配置
-作成した設定ファイルは、ルートディレクトリ直下の「.circleci」ディレクトリ配下に配置することでGitHubへの操作を契機としCircleCIによりCI/CDが実行されます。
+作成した設定ファイルは、ルートディレクトリ直下の「.circleci」ディレクトリ配下に配置することでGitHubへの操作を契機としCircleCIによりCI/CDのパイプラインが実行されます。
 
 image::fig_01.png[github_rootdirectory, 640]
 
@@ -483,8 +483,110 @@ image::fig_24.png[add_env, 640]
 https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-step
 ====
 
+==== 実行結果の確認
+CircleCI画面では実行されたパイプラインについて、下記の手順でワークフロー単位・Job単位での実行結果の確認を行います。 +
+また、エラーが発生した場合には、適宜パイプラインの再実行を設定します。
+
+* サイドバーの「Pipelines」を選択することで、下図のようにパイプライン単位で実行結果を確認することができます。
+
+image::fig_71.png[cicd_result, 640]
+
+[TIP]
+====
+Pipelines画面の出力結果は、Filterとしてリポジトリ/コミットしたユーザ/ブランチでフィルタリングが可能です。
+====
+
+* パイプライン番号横の「▶」を押すと、ワークフローに属するJobごとの結果を確認することができます。
+
+image::fig_72.png[cicd_result, 640]
+
+
+* パイプライン右の「・・・」を押すと、各パイプラインの設定ファイル（config.yml）の内容を確認することができます。
+
+image::fig_73.png[cicd_result, 640]
+
+
+[TIP]
+====
+設定ファイルの見方は、「Source」と「Compiled」があります。
+
+image::fig_74.png[cicd_result, 512]
+====
+
+
+* Pipelines画面でパイプラインの「STATUS」または「WORKFLOW」を押すと下図のようにワークフロー単位での実行結果を確認できます。
+
+image::fig_75.png[cicd_result, 640]
+
+
+* ワークフロー確認画面で「Return」を押すと下図のように再実行方法や実行停止を選択することができます。
+
+image::fig_76.png[cicd_result, 640]
+
+[TIP]
+====
+パイプラインが正常終了している場合は、「Rerun Workflow from Start」のみ選択することが可能ですが、異常終了している場合は「Rerun Workflow from Failed」も選択可能です。
+
+image::fig_77.png[cicd_result, 512]
+====
+
+* ワークフロー確認画面で「・・・」を押すと下図のように設定ファイル確認とProjectSettingを行うことができます。 +
+※画面・内容については、既に説明済みのため省略
+
+image::fig_78.png[cicd_result, 640]
+
+
+* ワークフロー確認画面で任意のJobを選択すると下図のようにJob単位での実行結果を確認することができます。 +
+また、各ステップは「▶」を押すことで展開可能です。
+
+image::fig_79.png[cicd_result, 640]
+
+[TIP]
+====
+「Spin Up Environment」、「Preparing Environment Variables」については、設定ファイルの記述に関係なく実行されるデフォルトのStepです。 +
+それぞれ実行環境の構築と環境変数の読み込みを行うStepです。
+====
+
+
+* Job確認画面で「Return」を押すと下図のようにワークフロー確認画面と同様に再実行方法や実行停止を選択することができます。
+
+image::fig_80.png[cicd_result, 640]
+
+
+* Job確認画面で「・・・」を押すと下図のようにワークフロー確認画面と同様に設定ファイル確認とProjectSettingを行うことができます。
+
+image::fig_81.png[cicd_result, 640]
+
+
+* Job確認画面で任意のJobを選択することで、下図のようにJobの内容を確認することができます。
+
+image::fig_82.png[cicd_result, 640]
+
+
+* Organization所有のリポジトリについて、リポジトリへのアクセス権限によって、パイプラインの操作可能範囲が異なります。
+
+ * リポジトリへのアクセス権限が「参照」の場合、下図に示すようにパイプラインの再実施等のRerun操作は不可能です。
+
+image::fig_83.png[cicd_result, 640]
+
+
+ * リポジトリへのアクセス権限が「書込み」以上の場合、Rerun操作が可能です。
+
+image::fig_84.png[cicd_result, 640]
+
+
+このガイドラインでは、2020年4月21日現在の最新画面レイアウトに基づいて説明しましたが、下図のように旧画面レイアウトでCircleCサイトを利用することも可能です。 +
+見え方は若干異なっていますが、確認できる内容は前述のものと同じなので直感的に使いやすい方を使えばよいです。
+
+image::fig_85.png[cicd_result, 640]
+
+image::fig_86.png[cicd_result, 640]
+
+image::fig_87.png[cicd_result, 640]
+
+
 ==== 実行結果の発報
-パイプライン事項結果をPJのチャットツール（このガイドラインではSlack ）に連携する。
+パイプライン実行結果をPJのチャットツール（このガイドラインではSlack ）に連携する。
 
 1 Slackの「App」よりCircleCIアプリを追加して、「セットアップの手順」に従ってCircleCIに設定する。
 
@@ -492,7 +594,7 @@ image::fig_31.png[add_slack, 640]
 
 [TIP]
 ====
-実行結果は、下記の方式でCircleC及びGitHubへのリンク付きで連携される。 +
+実行結果は、下記の方式でCircleCI及びGitHubへのリンク付きで連携される。 +
 正常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」を正常に通過したのか、「コミットしたGitHubユーザ」は誰かを通知する。 +
 異常終了した場合は「どのリポジトリ」の「どのブランチ」が「誰が作成したパイプライン」の「どのJob」で異常終了したのか、「コミットしたGitHubユーザ」は誰かを通知する。
 
@@ -505,7 +607,7 @@ image::fig_32.png[add_slack, 640]
 image::fig_41.png[organization, 640]
 
 
-2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、GitHub画面を開く。
+2 「User Setting」画面で「Account Integrations」→GitHuｂの「Check permissions」を選択して、Github画面を開く。
 
 image::fig_42.png[organization, 640]
 
