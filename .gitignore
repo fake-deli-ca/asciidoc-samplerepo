@@ -1,7 +1,0 @@
-.DS_Store
-.project
-.classpath
-.gradle
-.settings
-build
-src/docs/asciidoc/.asciidoctor
