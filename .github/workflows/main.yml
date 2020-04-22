@@ -17,6 +17,7 @@ jobs:
       run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew docs
+      
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
