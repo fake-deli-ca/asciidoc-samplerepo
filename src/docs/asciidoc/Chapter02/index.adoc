@@ -112,7 +112,7 @@ image::fig_31.png[web, 640]
 image::fig_32.png[web, 640]
 
 ==== SonarQube・Nexus用サーバ
-このサーバでは、CI/CDツール実行後にテスト結果とビルド資産を配置するためにSonarQubeとNexusが起動しています。
+このサーバでは、CI/CDのパイプライン実行後にテスト結果とビルド資産を配置するためにSonarQubeとNexusが起動しています。
 * サーバスペック
 サーバは下記のよう設定しています。
 
